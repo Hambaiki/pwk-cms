@@ -1,223 +1,164 @@
-"use server";
+'use server'
 
-import { revalidatePath } from "next/cache";
-import { z } from "zod";
-import { eq, desc, like, and, count } from "drizzle-orm";
-import { createClient as createSupabaseServer } from "@/lib/supabase/server";
-import { db } from "@/lib/db";
-import { media } from "@/lib/db/schema";
-import type { Media } from "@/lib/db/schema";
-import { verifySession } from "@/lib/dal";
+import { revalidatePath } from 'next/cache'
+import { eq, desc, like, and, count } from 'drizzle-orm'
+import { createClient as createSupabaseServer } from '@/lib/supabase/server'
+import { db } from '@/lib/db'
+import { media } from '@/lib/db/schema'
+import type { Media } from '@/lib/db/schema'
+import { verifySession } from '@/lib/dal'
+import { requireCollectionRole } from '@/lib/actions/collections'
 
-// ─── Constants ─────────────────────────────────────────────────────────────────
-
-const BUCKET = "cms-media";
-const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+const BUCKET = 'cms-media'
+const MAX_FILE_SIZE = 50 * 1024 * 1024
 const ACCEPTED_MIME = new Set([
-  "image/jpeg",
-  "image/png",
-  "image/gif",
-  "image/webp",
-  "image/svg+xml",
-  "image/avif",
-  "video/mp4",
-  "video/webm",
-  "application/pdf",
-  "text/plain",
-  "text/csv",
-  "application/zip",
-]);
-
-// ─── Types ─────────────────────────────────────────────────────────────────────
+  'image/jpeg', 'image/png', 'image/gif', 'image/webp',
+  'image/svg+xml', 'image/avif', 'video/mp4', 'video/webm',
+  'application/pdf', 'text/plain', 'text/csv', 'application/zip',
+])
 
 export type MediaListResult = {
-  items: Media[];
-  total: number;
-  page: number;
-  totalPages: number;
-};
+  items: Media[]
+  total: number
+  page: number
+  totalPages: number
+}
 
-export type UploadState =
-  | {
-      errors?: { general?: string[] };
-      uploaded?: Media[];
-    }
-  | undefined;
+export type UploadState = {
+  errors?: { general?: string[] }
+  uploaded?: Media[]
+} | undefined
 
-// ─── List media ────────────────────────────────────────────────────────────────
+// ─── List media scoped to a collection ────────────────────────────────────────
 
-export async function getMedia(
-  opts: {
-    folder?: string;
-    search?: string;
-    mimePrefix?: string; // e.g. 'image/' to filter by type
-    page?: number;
-    limit?: number;
-  } = {},
-): Promise<MediaListResult> {
-  await verifySession();
+export async function getMedia(opts: {
+  collectionId: string
+  search?: string
+  mimePrefix?: string
+  page?: number
+  limit?: number
+}): Promise<MediaListResult> {
+  const session = await verifySession()
+  await requireCollectionRole(opts.collectionId, session.userId, 'viewer')
 
-  const page = Math.max(1, opts.page ?? 1);
-  const limit = Math.min(100, opts.limit ?? 40);
-  const offset = (page - 1) * limit;
+  const page   = Math.max(1, opts.page  ?? 1)
+  const limit  = Math.min(100, opts.limit ?? 40)
+  const offset = (page - 1) * limit
 
-  const conditions = [];
-  if (opts.folder) conditions.push(eq(media.folder, opts.folder));
-  if (opts.search) conditions.push(like(media.filename, `%${opts.search}%`));
-  if (opts.mimePrefix)
-    conditions.push(like(media.mimeType, `${opts.mimePrefix}%`));
+  const conditions = [eq(media.collectionId, opts.collectionId)]
+  if (opts.search)     conditions.push(like(media.filename, `%${opts.search}%`))
+  if (opts.mimePrefix) conditions.push(like(media.mimeType, `${opts.mimePrefix}%`))
 
-  const where = conditions.length > 0 ? and(...conditions) : undefined;
+  const where = and(...conditions)
 
   try {
     const [items, [{ total }]] = await Promise.all([
-      db
-        .select()
-        .from(media)
-        .where(where)
-        .orderBy(desc(media.createdAt))
-        .limit(limit)
-        .offset(offset),
+      db.select().from(media).where(where).orderBy(desc(media.createdAt)).limit(limit).offset(offset),
       db.select({ total: count() }).from(media).where(where),
-    ]);
-
-    return {
-      items,
-      total: Number(total),
-      page,
-      totalPages: Math.ceil(Number(total) / limit),
-    };
+    ])
+    return { items, total: Number(total), page, totalPages: Math.ceil(Number(total) / limit) }
   } catch {
-    // Table may not exist yet — return empty result until migrations are run
-    return { items: [], total: 0, page, totalPages: 0 };
+    return { items: [], total: 0, page, totalPages: 0 }
   }
 }
 
 // ─── Upload ────────────────────────────────────────────────────────────────────
-// Accepts a FormData with one or more files under the key "files".
-// Uploads each to Supabase Storage, then inserts a metadata row into the DB.
 
 export async function uploadMedia(
   _state: UploadState,
   formData: FormData,
 ): Promise<UploadState> {
-  const session = await verifySession();
+  const session = await verifySession()
 
-  const files = formData.getAll("files") as File[];
-  const folder = (formData.get("folder") as string | null) ?? "/";
+  const collectionId = formData.get('collectionId') as string | null
+  if (!collectionId) return { errors: { general: ['Collection ID is required.'] } }
 
-  if (!files.length) {
-    return { errors: { general: ["No files provided."] } };
-  }
+  await requireCollectionRole(collectionId, session.userId, 'editor')
 
-  const supabase = await createSupabaseServer();
-  const uploaded: Media[] = [];
-  const errors: string[] = [];
+  const files = formData.getAll('files') as File[]
+  if (!files.length) return { errors: { general: ['No files provided.'] } }
+
+  const supabase = await createSupabaseServer()
+  const uploaded: Media[] = []
+  const errors: string[] = []
 
   for (const file of files) {
-    // Validate
-    if (file.size > MAX_FILE_SIZE) {
-      errors.push(`"${file.name}" exceeds the 50 MB limit.`);
-      continue;
-    }
-    if (!ACCEPTED_MIME.has(file.type)) {
-      errors.push(`"${file.name}" — unsupported file type (${file.type}).`);
-      continue;
-    }
+    if (file.size > MAX_FILE_SIZE) { errors.push(`"${file.name}" exceeds 50 MB.`); continue }
+    if (!ACCEPTED_MIME.has(file.type)) { errors.push(`"${file.name}" — unsupported type.`); continue }
 
-    // Build a unique storage path: folder/userId/timestamp-filename
-    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-    const storagePath = [
-      folder.replace(/^\//, ""),
-      session.userId,
-      `${Date.now()}-${safeName}`,
-    ]
-      .filter(Boolean)
-      .join("/");
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
+    const storagePath = `${collectionId}/${session.userId}/${Date.now()}-${safeName}`
 
-    // Upload to Supabase Storage
     const { error: uploadError } = await supabase.storage
       .from(BUCKET)
-      .upload(storagePath, file, { contentType: file.type, upsert: false });
+      .upload(storagePath, file, { contentType: file.type, upsert: false })
 
-    if (uploadError) {
-      errors.push(`"${file.name}" failed to upload: ${uploadError.message}`);
-      continue;
-    }
+    if (uploadError) { errors.push(`"${file.name}" failed: ${uploadError.message}`); continue }
 
-    // Get public URL
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from(BUCKET).getPublicUrl(storagePath);
+    const { data: { publicUrl } } = supabase.storage.from(BUCKET).getPublicUrl(storagePath)
 
-    // Read image dimensions if applicable
-    let width: number | null = null;
-    let height: number | null = null;
-
-    // Insert metadata row
     const [row] = await db
       .insert(media)
       .values({
-        filename: file.name,
+        collectionId,
+        filename:    file.name,
         storagePath,
         publicUrl,
-        mimeType: file.type,
-        size: file.size,
-        width,
-        height,
-        folder,
-        uploadedBy: session.userId,
+        mimeType:    file.type,
+        size:        file.size,
+        width:       null,
+        height:      null,
+        uploadedBy:  session.userId,
       })
-      .returning();
+      .returning()
 
-    uploaded.push(row);
+    uploaded.push(row)
   }
 
-  revalidatePath("/cms/media");
+  revalidatePath(`/cms/media?collection=${collectionId}`)
 
   if (errors.length > 0 && uploaded.length === 0) {
-    return { errors: { general: errors } };
+    return { errors: { general: errors } }
   }
-
-  return { uploaded, errors: errors.length ? { general: errors } : undefined };
+  return { uploaded, errors: errors.length ? { general: errors } : undefined }
 }
 
 // ─── Update alt text ───────────────────────────────────────────────────────────
 
 export async function updateMediaAlt(id: string, alt: string): Promise<void> {
-  await verifySession();
-  await db.update(media).set({ alt }).where(eq(media.id, id));
-  revalidatePath("/cms/media");
+  const session = await verifySession()
+  const [row] = await db.select({ collectionId: media.collectionId }).from(media).where(eq(media.id, id)).limit(1)
+  if (!row) return
+  await requireCollectionRole(row.collectionId, session.userId, 'editor')
+  await db.update(media).set({ alt }).where(eq(media.id, id))
 }
 
 // ─── Delete ────────────────────────────────────────────────────────────────────
 
 export async function deleteMedia(id: string): Promise<{ error?: string }> {
-  const session = await verifySession();
+  const session = await verifySession()
 
   const [row] = await db
-    .select({ storagePath: media.storagePath, uploadedBy: media.uploadedBy })
+    .select({ storagePath: media.storagePath, uploadedBy: media.uploadedBy, collectionId: media.collectionId })
     .from(media)
     .where(eq(media.id, id))
-    .limit(1);
+    .limit(1)
 
-  if (!row) return { error: "File not found." };
+  if (!row) return { error: 'File not found.' }
 
-  if (row.uploadedBy !== session.userId && session.role !== "admin") {
-    return { error: "Permission denied." };
+  const role = await requireCollectionRole(row.collectionId, session.userId, 'editor').catch(() => null)
+  if (!role) return { error: 'Permission denied.' }
+
+  // Editors can only delete their own uploads; owners can delete any
+  if (role === 'editor' && row.uploadedBy !== session.userId) {
+    return { error: 'Permission denied.' }
   }
 
-  // Delete from Supabase Storage first
-  const supabase = await createSupabaseServer();
-  const { error: storageError } = await supabase.storage
-    .from(BUCKET)
-    .remove([row.storagePath]);
+  const supabase = await createSupabaseServer()
+  const { error: storageError } = await supabase.storage.from(BUCKET).remove([row.storagePath])
+  if (storageError) return { error: storageError.message }
 
-  if (storageError) return { error: storageError.message };
-
-  // Delete DB row
-  await db.delete(media).where(eq(media.id, id));
-
-  revalidatePath("/cms/media");
-  return {};
+  await db.delete(media).where(eq(media.id, id))
+  revalidatePath(`/cms/media?collection=${row.collectionId}`)
+  return {}
 }
