@@ -2,10 +2,12 @@
 
 @import "tailwindcss";
 
+@plugin 'tailwind-scrollbar';
+@plugin 'tailwind-typography';
+
 /* ─── Tailwind v4 theme — CMS design tokens ─────────────────────────────────
-   All --cms-* variables are declared here as CSS custom properties and then
-   exposed as Tailwind utilities via @theme so you can use them as classes:
-   text-cms-text, bg-cms-surface, border-cms-border, font-cms-mono, etc.
+   All --cms-* variables declared here become Tailwind utility classes:
+   text-cms-text, bg-cms-surface, border-cms-border, accent-cms-accent, etc.
 ──────────────────────────────────────────────────────────────────────────── */
 
 @theme {
@@ -21,9 +23,17 @@
   --color-cms-text-3: #5a5855;
   --color-cms-accent: #e8a030;
   --color-cms-accent-dim: rgba(232, 160, 48, 0.12);
+  --color-cms-accent-subtle: rgba(232, 160, 48, 0.06);
   --color-cms-accent-text: #1a1108;
+  --color-cms-accent-border: rgba(232, 160, 48, 0.2);
   --color-cms-danger: #e05050;
   --color-cms-danger-dim: rgba(224, 80, 80, 0.1);
+  --color-cms-danger-subtle: rgba(224, 80, 80, 0.4);
+  --color-cms-danger-border: rgba(224, 80, 80, 0.2);
+  --color-cms-success: #28a05a;
+  --color-cms-success-subtle: rgba(40, 160, 90, 0.08);
+  --color-cms-success-dim: rgba(40, 160, 90, 0.12);
+  --color-cms-success-border: rgba(40, 160, 90, 0.2);
 
   /* Font families */
   --font-cms-mono: "IBM Plex Mono", monospace;
@@ -35,379 +45,48 @@
   --radius-cms-xl: 12px;
 }
 
-/* ─── Raw CSS variables (used by cms.css class selectors below) ───────────────
-   These mirror the @theme tokens so legacy .cms-* class selectors still work.
+/* ─── Raw CSS variables ───────────────────────────────────────────────────────
+   Mirror of @theme tokens for use in arbitrary Tailwind values [var(--cms-*)].
 ──────────────────────────────────────────────────────────────────────────── */
 
 :root {
-  --cms-sidebar-w: 220px;
-  --cms-topbar-h: 44px;
-
   --cms-bg: var(--color-cms-bg);
   --cms-surface: var(--color-cms-surface);
   --cms-surface-2: var(--color-cms-surface-2);
   --cms-surface-3: var(--color-cms-surface-3);
   --cms-border: var(--color-cms-border);
   --cms-border-2: var(--color-cms-border-2);
-
   --cms-text: var(--color-cms-text);
   --cms-text-2: var(--color-cms-text-2);
   --cms-text-3: var(--color-cms-text-3);
-
   --cms-accent: var(--color-cms-accent);
   --cms-accent-dim: var(--color-cms-accent-dim);
   --cms-accent-text: var(--color-cms-accent-text);
-
   --cms-danger: var(--color-cms-danger);
   --cms-danger-dim: var(--color-cms-danger-dim);
-
+  --cms-danger-subtle: var(--color-cms-danger-subtle);
+  --cms-danger-border: var(--color-cms-danger-border);
   --cms-mono: var(--font-cms-mono);
   --cms-serif: var(--font-cms-serif);
 }
 
-/* ─── CMS Shell layout ───────────────────────────────────────────────────────*/
+/* ─── Background pattern utilities ───────────────────────────────────────────
+   Used in the CMS shell — sidebar dot-grid and content area line-grid.
+   Defined here so components use class names instead of inline style= props.
+──────────────────────────────────────────────────────────────────────────── */
 
-.cms-shell {
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
-  background: var(--cms-bg);
-  color: var(--cms-text);
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-/* Sidebar */
-.cms-sidebar {
-  width: var(--cms-sidebar-w);
-  flex-shrink: 0;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: var(--cms-surface);
-  border-right: 1px solid var(--cms-border);
-  overflow: hidden;
+@utility bg-dot-grid {
   background-image: radial-gradient(
     circle,
     rgba(255, 255, 255, 0.03) 1px,
     transparent 1px
   );
   background-size: 20px 20px;
-  background-color: var(--cms-surface);
 }
 
-.cms-brand {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 18px 16px 14px;
-  border-bottom: 1px solid var(--cms-border);
-  flex-shrink: 0;
-}
-
-.cms-brand-mark {
-  color: var(--cms-accent);
-  display: flex;
-  align-items: center;
-}
-
-.cms-brand-name {
-  font-family: var(--cms-mono);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--cms-text);
-  letter-spacing: -0.02em;
-}
-.cms-brand-name span {
-  color: var(--cms-accent);
-}
-
-/* Nav */
-.cms-nav {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 8px 0;
-  display: flex;
-  flex-direction: column;
-  scrollbar-width: thin;
-  scrollbar-color: var(--cms-border) transparent;
-}
-
-.cms-nav-section {
-  padding: 4px 0;
-  border-bottom: 1px solid var(--cms-border);
-}
-.cms-nav-section:last-child {
-  border-bottom: none;
-}
-
-.cms-nav-label {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 16px 4px;
-  font-family: var(--cms-mono);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--cms-text-3);
-}
-
-.cms-nav-add {
-  color: var(--cms-text-3);
-  transition: color 0.15s;
-  display: flex;
-  align-items: center;
-}
-.cms-nav-add:hover {
-  color: var(--cms-accent);
-}
-
-.cms-nav-empty {
-  padding: 4px 16px 8px;
-  font-size: 11px;
-  color: var(--cms-text-3);
-  font-style: italic;
-}
-
-.cms-nav-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 16px;
-  font-size: 12.5px;
-  color: var(--cms-text-2);
-  text-decoration: none;
-  transition:
-    color 0.12s,
-    background 0.12s;
-  cursor: pointer;
-  border: none;
-  background: none;
-  width: 100%;
-  text-align: left;
-  position: relative;
-}
-
-/* Non-interactive collection label row in the nav */
-.cms-nav-collection-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 16px;
-  font-size: 12.5px;
-  color: var(--cms-text-2);
-  cursor: default;
-  position: relative;
-}
-.cms-nav-item:hover {
-  color: var(--cms-text);
-  background: rgba(255, 255, 255, 0.04);
-}
-.cms-nav-item.active {
-  color: var(--cms-text);
-  background: var(--cms-accent-dim);
-}
-.cms-nav-item.active::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 4px;
-  bottom: 4px;
-  width: 2px;
-  background: var(--cms-accent);
-  border-radius: 0 2px 2px 0;
-}
-.cms-nav-item svg {
-  flex-shrink: 0;
-  opacity: 0.6;
-}
-.cms-nav-item.active svg,
-.cms-nav-item:hover svg {
-  opacity: 1;
-}
-
-.cms-nav-icon {
-  font-size: 12px;
-  width: 14px;
-  text-align: center;
-  flex-shrink: 0;
-}
-.cms-nav-col-name {
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.cms-nav-page-badge {
-  font-family: var(--cms-mono);
-  font-size: 9px;
-  padding: 1px 5px;
-  border-radius: 3px;
-  background: rgba(130, 90, 220, 0.15);
-  border: 1px solid rgba(130, 90, 220, 0.25);
-  color: #a080e8;
-  flex-shrink: 0;
-}
-
-.cms-nav-bottom {
-  margin-top: auto;
-  border-top: 1px solid var(--cms-border) !important;
-  border-bottom: none !important;
-}
-.cms-nav-signout {
-  color: var(--cms-text-3) !important;
-}
-.cms-nav-signout:hover {
-  color: var(--cms-danger) !important;
-  background: var(--cms-danger-dim) !important;
-}
-
-/* User footer */
-.cms-user-footer {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border-top: 1px solid var(--cms-border);
-  flex-shrink: 0;
-}
-.cms-user-avatar {
-  width: 26px;
-  height: 26px;
-  border-radius: 6px;
-  background: var(--cms-accent-dim);
-  border: 1px solid rgba(232, 160, 48, 0.2);
-  color: var(--cms-accent);
-  font-family: var(--cms-mono);
-  font-size: 11px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.cms-user-info {
-  min-width: 0;
-}
-.cms-user-email {
-  font-size: 11px;
-  color: var(--cms-text-3);
-  font-family: var(--cms-mono);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  display: block;
-}
-
-/* Main + topbar */
-.cms-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  min-width: 0;
-}
-
-.cms-topbar {
-  height: var(--cms-topbar-h);
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  padding: 0 24px;
-  border-bottom: 1px solid var(--cms-border);
-  background: var(--cms-surface);
-}
-
-.cms-breadcrumbs {
-  display: flex;
-  align-items: center;
-  gap: 0;
-}
-.cms-breadcrumb-item {
-  display: flex;
-  align-items: center;
-}
-.cms-breadcrumb-sep {
-  color: var(--cms-text-3);
-  font-family: var(--cms-mono);
-  font-size: 12px;
-  margin: 0 6px;
-}
-.cms-breadcrumb-link {
-  font-family: var(--cms-mono);
-  font-size: 12px;
-  color: var(--cms-text-3);
-  text-decoration: none;
-  transition: color 0.12s;
-}
-.cms-breadcrumb-link:hover {
-  color: var(--cms-text-2);
-}
-.cms-breadcrumb-current {
-  font-family: var(--cms-mono);
-  font-size: 12px;
-  color: var(--cms-text-2);
-}
-
-/* Content area */
-.cms-content {
-  flex: 1;
-  overflow-y: auto;
-  background: var(--cms-bg);
+@utility bg-line-grid {
   background-image:
-    linear-gradient(var(--cms-border) 1px, transparent 1px),
-    linear-gradient(90deg, var(--cms-border) 1px, transparent 1px);
+    linear-gradient(var(--color-cms-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-cms-border) 1px, transparent 1px);
   background-size: 40px 40px;
-  background-color: var(--cms-bg);
-  scrollbar-width: thin;
-  scrollbar-color: var(--cms-border) transparent;
-}
-
-/* ─── Utility classes used across CMS pages ──────────────────────────────────*/
-
-.cms-badge {
-  display: inline-flex;
-  align-items: center;
-  font-family: var(--cms-mono);
-  font-size: 10px;
-  padding: 2px 7px;
-  border-radius: 3px;
-  border: 1px solid;
-}
-.cms-badge-draft {
-  background: rgba(90, 88, 85, 0.15);
-  border-color: rgba(90, 88, 85, 0.3);
-  color: #9e9b94;
-}
-.cms-badge-published {
-  background: rgba(40, 160, 90, 0.1);
-  border-color: rgba(40, 160, 90, 0.25);
-  color: #50c878;
-}
-.cms-badge-archived {
-  background: rgba(224, 80, 80, 0.08);
-  border-color: rgba(224, 80, 80, 0.2);
-  color: #e05050;
-}
-
-.cms-section-label {
-  font-family: var(--cms-mono);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--cms-text-3);
-  margin-bottom: 12px;
-}
-
-.cms-dashboard-welcome {
-  font-family: var(--cms-serif);
-  font-size: 28px;
-  font-style: italic;
-  color: var(--cms-text);
-  line-height: 1.2;
 }

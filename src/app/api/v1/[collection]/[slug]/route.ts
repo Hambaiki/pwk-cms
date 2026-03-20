@@ -3,24 +3,44 @@ import { eq, and } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { entries, collections, entryTags, tags } from "@/lib/db/schema";
 import { withPublicKey } from "@/lib/api/middleware";
-import { ok, notFound } from "@/lib/api/response";
+import { ok, notFound, forbidden } from "@/lib/api/response";
 import type { ApiContext } from "@/lib/api/middleware";
 
 export const GET = withPublicKey(
-  async (_req: NextRequest, _ctx: ApiContext, params) => {
+  async (_req: NextRequest, ctx: ApiContext, params) => {
     const { collection: collectionSlug, slug: entrySlug } = params;
 
-    // Resolve collection
-    const [collection] = await db
-      .select({ id: collections.id })
-      .from(collections)
-      .where(eq(collections.slug, collectionSlug))
-      .limit(1);
+    // Resolve collection — same scoping logic as the list route
+    let collectionId: string;
 
-    if (!collection)
-      return notFound(`Collection "${collectionSlug}" not found`);
+    if (ctx.collectionId) {
+      const [col] = await db
+        .select({ id: collections.id, slug: collections.slug })
+        .from(collections)
+        .where(eq(collections.id, ctx.collectionId))
+        .limit(1);
 
-    // Fetch the entry — published only
+      if (!col) return notFound("Collection not found");
+      if (col.slug !== collectionSlug) {
+        return forbidden("This API key is not authorised for this collection");
+      }
+      collectionId = col.id;
+    } else {
+      const matches = await db
+        .select({ id: collections.id })
+        .from(collections)
+        .where(eq(collections.slug, collectionSlug));
+
+      if (matches.length === 0)
+        return notFound(`Collection "${collectionSlug}" not found`);
+      if (matches.length > 1) {
+        return forbidden(
+          "This collection slug is ambiguous. Provide an API key to identify the collection.",
+        );
+      }
+      collectionId = matches[0].id;
+    }
+
     const [entry] = await db
       .select({
         id: entries.id,
@@ -33,7 +53,7 @@ export const GET = withPublicKey(
       .from(entries)
       .where(
         and(
-          eq(entries.collectionId, collection.id),
+          eq(entries.collectionId, collectionId),
           eq(entries.slug, entrySlug),
           eq(entries.status, "published"),
         ),
@@ -42,7 +62,6 @@ export const GET = withPublicKey(
 
     if (!entry) return notFound(`Entry "${entrySlug}" not found`);
 
-    // Fetch tags for this entry
     const entryTagRows = await db
       .select({ name: tags.name, slug: tags.slug })
       .from(entryTags)

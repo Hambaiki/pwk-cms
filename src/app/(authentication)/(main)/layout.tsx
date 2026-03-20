@@ -2,24 +2,24 @@ import type { ReactNode } from "react";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-stone-950 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-cms-bg flex items-center justify-center p-4">
       {/* Ambient background glow */}
       <div
         aria-hidden="true"
         className="pointer-events-none fixed inset-0 overflow-hidden"
       >
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-125 w-125 rounded-full bg-amber-500/5 blur-[120px]" />
-        <div className="absolute bottom-0 right-0 h-75 w-75 rounded-full bg-amber-600/5 blur-[100px]" />
+        <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-125 w-125 rounded-full bg-cms-accent-subtle blur-[120px]" />
+        <div className="absolute bottom-0 right-0 h-75 w-75 rounded-full bg-cms-accent-subtle blur-[100px]" />
       </div>
 
       <div className="relative w-full max-w-md">
         {/* Logo / Brand */}
         <div className="mb-8 text-center">
-          <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-amber-500 mb-4">
+          <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-cms-accent mb-4 shadow-sm">
             <svg
               viewBox="0 0 24 24"
               fill="none"
-              className="w-5 h-5 text-stone-950"
+              className="w-5 h-5 text-cms-accent-text"
               aria-hidden="true"
             >
               <path
@@ -31,13 +31,14 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
               />
             </svg>
           </div>
-          <p className="text-xs tracking-[0.2em] uppercase text-stone-600 font-medium">
+
+          <p className="text-xs tracking-[0.2em] uppercase text-cms-text-3 font-medium">
             Your App Name
           </p>
         </div>
 
         {/* Card */}
-        <div className="rounded-2xl border border-stone-800 bg-stone-900/60 backdrop-blur-sm p-8 shadow-2xl shadow-black/50">
+        <div className="rounded-2xl border border-cms-border bg-cms-surface/80 backdrop-blur-sm p-8 shadow-2xl shadow-black/40">
           {children}
         </div>
       </div>

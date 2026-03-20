@@ -1,74 +1,88 @@
-'use client'
+"use client";
 
-import { useActionState, useEffect, useRef } from 'react'
-import { createCollection, updateCollection } from '@/lib/actions/collections'
-import type { CollectionFormState } from '@/lib/actions/collections'
-import type { Collection } from '@/lib/db/schema'
+import { cn } from "@/lib/utils";
+import { useActionState, useEffect, useRef } from "react";
+import { createCollection, updateCollection } from "@/lib/actions/collections";
+import type { CollectionFormState } from "@/lib/actions/collections";
+import type { Collection } from "@/lib/db/schema";
 
-type Props =
-  | { mode: 'create' }
-  | { mode: 'edit'; collection: Collection }
+type Props = { mode: "create" } | { mode: "edit"; collection: Collection };
 
 function slugify(value: string) {
-  return value.toLowerCase().trim()
-    .replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '')
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
+// ─── Shared input class ────────────────────────────────────────────────────────
+
+const baseInput =
+  "w-full font-mono text-xs px-2.5 py-1.5 rounded-cms border bg-cms-surface-2 text-cms-text placeholder:text-cms-text-3 outline-none transition-colors";
+const inputCls = (hasError?: boolean) =>
+  cn(
+    baseInput,
+    hasError
+      ? "border-cms-danger-border focus:border-cms-danger"
+      : "border-cms-border hover:border-cms-border-2 focus:border-cms-accent",
+  );
+
 export function CollectionForm(props: Props) {
-  const isEdit = props.mode === 'edit'
-  const collection = isEdit ? props.collection : undefined
+  const isEdit = props.mode === "edit";
+  const collection = isEdit ? props.collection : undefined;
 
   const action = isEdit
     ? updateCollection.bind(null, collection!.id)
-    : createCollection
+    : createCollection;
 
-  const [state, formAction, pending] = useActionState<CollectionFormState, FormData>(
-    action,
-    undefined,
-  )
+  const [state, formAction, pending] = useActionState<
+    CollectionFormState,
+    FormData
+  >(action, undefined);
 
-  const nameRef = useRef<HTMLInputElement>(null)
-  const slugRef = useRef<HTMLInputElement>(null)
-  const slugManuallyEdited = useRef(false)
+  const nameRef = useRef<HTMLInputElement>(null);
+  const slugRef = useRef<HTMLInputElement>(null);
+  const slugManuallyEdited = useRef(false);
 
   useEffect(() => {
-    if (!isEdit) {
-      nameRef.current?.focus()
-    }
-  }, [isEdit])
+    if (!isEdit) nameRef.current?.focus();
+  }, [isEdit]);
 
   function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (!slugManuallyEdited.current && slugRef.current) {
-      slugRef.current.value = slugify(e.target.value)
+      slugRef.current.value = slugify(e.target.value);
     }
   }
 
-  function handleSlugChange() {
-    slugManuallyEdited.current = true
-  }
-
-  const inputCls = (hasError?: boolean) =>
-    [
-      'w-full rounded-lg border bg-stone-800 px-3 py-2 text-sm text-stone-100',
-      'placeholder:text-stone-600 outline-none transition-all duration-150',
-      'focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50',
-      hasError ? 'border-red-500/60' : 'border-stone-700 hover:border-stone-500',
-    ].join(' ')
+  const labelCls =
+    "font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text-3 block mb-1.5";
+  const hintCls = "normal-case tracking-normal font-normal text-cms-text-3";
 
   return (
     <form action={formAction} className="space-y-5">
+      {/* General errors */}
       {state?.errors?.general?.map((msg) => (
-        <p key={msg} className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-2">{msg}</p>
+        <p
+          key={msg}
+          className="font-mono text-xs text-cms-danger bg-cms-danger-dim border border-cms-danger-border rounded-cms px-3 py-2"
+        >
+          {msg}
+        </p>
       ))}
 
+      {/* Success message */}
       {state?.message && (
-        <p className="text-sm text-green-400 bg-green-500/10 border border-green-500/20 rounded-lg px-4 py-2">{state.message}</p>
+        <p className="font-mono text-xs text-cms-success bg-cms-success-subtle border border-cms-success-border rounded-cms px-3 py-2">
+          {state.message}
+        </p>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         {/* Name */}
-        <div className="space-y-1.5">
-          <label htmlFor="col-name" className="text-xs font-semibold uppercase tracking-widest text-stone-400">
+        <div>
+          <label htmlFor="col-name" className={labelCls}>
             Name
           </label>
           <input
@@ -82,21 +96,23 @@ export function CollectionForm(props: Props) {
             className={inputCls(!!state?.errors?.name)}
           />
           {state?.errors?.name?.map((e) => (
-            <p key={e} className="text-xs text-red-400">{e}</p>
+            <p key={e} className="font-mono text-[10px] text-cms-danger mt-1">
+              {e}
+            </p>
           ))}
         </div>
 
         {/* Icon */}
-        <div className="space-y-1.5">
-          <label htmlFor="col-icon" className="text-xs font-semibold uppercase tracking-widest text-stone-400">
-            Icon <span className="text-stone-600 normal-case font-normal">(emoji)</span>
+        <div>
+          <label htmlFor="col-icon" className={labelCls}>
+            Icon <span className={hintCls}>(emoji)</span>
           </label>
           <input
             id="col-icon"
             name="icon"
             type="text"
             placeholder="📝"
-            defaultValue={collection?.icon ?? ''}
+            defaultValue={collection?.icon ?? ""}
             maxLength={2}
             className={inputCls()}
           />
@@ -104,12 +120,12 @@ export function CollectionForm(props: Props) {
       </div>
 
       {/* Slug */}
-      <div className="space-y-1.5">
-        <label htmlFor="col-slug" className="text-xs font-semibold uppercase tracking-widest text-stone-400">
-          Slug <span className="text-stone-600 normal-case font-normal">(used in API routes)</span>
+      <div>
+        <label htmlFor="col-slug" className={labelCls}>
+          Slug <span className={hintCls}>(used in API routes)</span>
         </label>
-        <div className="flex items-center gap-0">
-          <span className="rounded-l-lg border border-r-0 border-stone-700 bg-stone-700/50 px-3 py-2 text-xs text-stone-500 font-mono whitespace-nowrap">
+        <div className="flex items-center">
+          <span className="font-mono text-[11px] text-cms-text-3 bg-cms-surface-3 border border-r-0 border-cms-border px-2.5 py-1.5 rounded-l-cms whitespace-nowrap">
             /api/v1/
           </span>
           <input
@@ -119,27 +135,31 @@ export function CollectionForm(props: Props) {
             type="text"
             placeholder="blog-post"
             defaultValue={collection?.slug}
-            onChange={handleSlugChange}
-            className={[inputCls(!!state?.errors?.slug), 'rounded-l-none'].join(' ')}
+            onChange={() => {
+              slugManuallyEdited.current = true;
+            }}
+            className={cn(inputCls(!!state?.errors?.slug), "rounded-l-none")}
           />
         </div>
         {state?.errors?.slug?.map((e) => (
-          <p key={e} className="text-xs text-red-400">{e}</p>
+          <p key={e} className="font-mono text-[10px] text-cms-danger mt-1">
+            {e}
+          </p>
         ))}
       </div>
 
       {/* Description */}
-      <div className="space-y-1.5">
-        <label htmlFor="col-description" className="text-xs font-semibold uppercase tracking-widest text-stone-400">
-          Description <span className="text-stone-600 normal-case font-normal">(optional)</span>
+      <div>
+        <label htmlFor="col-description" className={labelCls}>
+          Description <span className={hintCls}>(optional)</span>
         </label>
         <textarea
           id="col-description"
           name="description"
           rows={2}
           placeholder="A short description of this content type"
-          defaultValue={collection?.description ?? ''}
-          className={[inputCls(), 'resize-none'].join(' ')}
+          defaultValue={collection?.description ?? ""}
+          className={cn(inputCls(), "resize-none")}
         />
       </div>
 
@@ -150,21 +170,30 @@ export function CollectionForm(props: Props) {
           name="isPage"
           value="true"
           defaultChecked={collection?.isPage ?? false}
-          className="w-4 h-4 rounded border-stone-700 bg-stone-800 accent-amber-500"
+          className="w-4 h-4 rounded accent-cms-accent border-cms-border bg-cms-surface-2"
         />
-        <span className="text-sm text-stone-300">Single instance (page)</span>
-        <span className="text-xs text-stone-600">— only one entry allowed</span>
+        <span className="font-mono text-xs text-cms-text-2">
+          Single instance (page)
+        </span>
+        <span className="font-mono text-[11px] text-cms-text-3">
+          — only one entry allowed
+        </span>
       </label>
 
-      <div className="pt-2">
+      <div className="pt-1">
         <button
           type="submit"
           disabled={pending}
-          className="rounded-lg bg-amber-500 px-5 py-2 text-sm font-semibold text-stone-950 hover:bg-amber-400 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+          className={cn(
+            "px-5 py-2 rounded-cms font-mono text-xs font-medium transition-all duration-200",
+            "bg-cms-accent text-cms-accent-text shadow-sm",
+            "hover:brightness-110 hover:shadow-md active:scale-[0.98]",
+            "disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100",
+          )}
         >
-          {pending ? 'Saving…' : isEdit ? 'Save changes' : 'Create collection'}
+          {pending ? "Saving…" : isEdit ? "Save changes" : "Create collection"}
         </button>
       </div>
     </form>
-  )
+  );
 }

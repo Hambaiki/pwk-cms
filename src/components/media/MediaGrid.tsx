@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import {
   useState,
   useRef,
@@ -37,9 +38,9 @@ function MediaCard({
     <>
       <div
         onClick={() => setShowDetail(true)}
-        className="rounded-cms border border-cms-border bg-cms-surface overflow-hidden cursor-pointer hover:border-cms-border2 transition-colors duration-100"
+        className="rounded-cms border border-cms-border bg-cms-surface overflow-hidden cursor-pointer hover:border-cms-border-2 transition-colors duration-100"
       >
-        <div className="h-[120px] bg-cms-surface2 flex items-center justify-center overflow-hidden">
+        <div className="h-30 bg-cms-surface-2 flex items-center justify-center overflow-hidden">
           {item.mimeType.startsWith("image/") ? (
             <img
               src={item.publicUrl}
@@ -48,16 +49,16 @@ function MediaCard({
               loading="lazy"
             />
           ) : (
-            <span className="font-mono text-sm font-medium text-cms-text3 tracking-wide">
+            <span className="font-mono text-sm font-medium text-cms-text-3 tracking-wide">
               {ext}
             </span>
           )}
         </div>
         <div className="px-2.5 py-2">
-          <p className="font-mono text-[11px] text-cms-text2 overflow-hidden text-ellipsis whitespace-nowrap mb-0.5">
+          <p className="font-mono text-[11px] text-cms-text-2 overflow-hidden text-ellipsis whitespace-nowrap mb-0.5">
             {item.filename}
           </p>
-          <p className="font-mono text-[10px] text-cms-text3">
+          <p className="font-mono text-[10px] text-cms-text-3">
             {fmtSize(item.size)}
           </p>
         </div>
@@ -72,7 +73,7 @@ function MediaCard({
             onClick={(e) => e.stopPropagation()}
             className="bg-cms-surface border border-cms-border rounded-cms-xl w-full max-w-2xl overflow-hidden flex flex-col"
           >
-            <div className="h-[300px] bg-cms-surface2 flex items-center justify-center">
+            <div className="h-75 bg-cms-surface-2 flex items-center justify-center">
               {item.mimeType.startsWith("image/") ? (
                 <img
                   src={item.publicUrl}
@@ -80,7 +81,9 @@ function MediaCard({
                   className="max-w-full max-h-full object-contain"
                 />
               ) : (
-                <span className="font-mono text-4xl text-cms-text3">{ext}</span>
+                <span className="font-mono text-4xl text-cms-text-3">
+                  {ext}
+                </span>
               )}
             </div>
 
@@ -98,17 +101,17 @@ function MediaCard({
                   ],
                 ].map(([label, value]) => (
                   <div key={label}>
-                    <p className="font-mono text-[10px] tracking-[0.07em] uppercase text-cms-text3 mb-0.5">
+                    <p className="font-mono text-[10px] tracking-[0.07em] uppercase text-cms-text-3 mb-0.5">
                       {label}
                     </p>
-                    <p className="font-mono text-xs text-cms-text2">{value}</p>
+                    <p className="font-mono text-xs text-cms-text-2">{value}</p>
                   </div>
                 ))}
               </div>
 
               {/* Alt text */}
               <div>
-                <p className="font-mono text-[10px] tracking-[0.07em] uppercase text-cms-text3 mb-1.5">
+                <p className="font-mono text-[10px] tracking-[0.07em] uppercase text-cms-text-3 mb-1.5">
                   Alt text
                 </p>
                 <div className="flex gap-2">
@@ -116,7 +119,7 @@ function MediaCard({
                     value={altValue}
                     onChange={(e) => setAltValue(e.target.value)}
                     placeholder="Describe the image for screen readers"
-                    className="flex-1 font-mono text-xs px-2.5 py-1.5 rounded-cms border border-cms-border bg-cms-surface2 text-cms-text outline-none focus:border-[rgba(232,160,48,0.5)] transition-colors"
+                    className="flex-1 font-mono text-xs px-2.5 py-1.5 rounded-cms border border-cms-border bg-cms-surface-2 text-cms-text outline-none focus:border-[rgba(232,160,48,0.5)] transition-colors"
                   />
                   <button
                     onClick={() =>
@@ -135,12 +138,12 @@ function MediaCard({
 
               {/* Actions */}
               <div className="flex items-center gap-2">
-                <code className="flex-1 font-mono text-[10px] text-cms-text3 overflow-hidden text-ellipsis whitespace-nowrap">
+                <code className="flex-1 font-mono text-[10px] text-cms-text-3 overflow-hidden text-ellipsis whitespace-nowrap">
                   {item.publicUrl}
                 </code>
                 <button
                   onClick={() => navigator.clipboard.writeText(item.publicUrl)}
-                  className="shrink-0 px-2.5 py-1 rounded border border-cms-border bg-transparent text-cms-text3 font-mono text-[10px] cursor-pointer hover:border-cms-border2 transition-colors"
+                  className="shrink-0 px-2.5 py-1 rounded border border-cms-border bg-transparent text-cms-text-3 font-mono text-[10px] cursor-pointer hover:border-cms-border-2 transition-colors"
                 >
                   Copy URL
                 </button>
@@ -161,7 +164,7 @@ function MediaCard({
                 </button>
                 <button
                   onClick={() => setShowDetail(false)}
-                  className="shrink-0 px-2.5 py-1 rounded border border-cms-border bg-transparent text-cms-text3 font-mono text-[10px] cursor-pointer hover:border-cms-border2 transition-colors"
+                  className="shrink-0 px-2.5 py-1 rounded border border-cms-border bg-transparent text-cms-text-3 font-mono text-[10px] cursor-pointer hover:border-cms-border-2 transition-colors"
                 >
                   Close
                 </button>
@@ -176,10 +179,10 @@ function MediaCard({
 
 function Dropzone({
   onUploaded,
-  folder,
+  collectionId,
 }: {
   onUploaded: (items: Media[]) => void;
-  folder: string;
+  collectionId: string;
 }) {
   const [uploadState, uploadAction, uploading] = useActionState<
     UploadState,
@@ -195,11 +198,11 @@ function Dropzone({
   const submitFiles = useCallback(
     (files: FileList | File[]) => {
       const fd = new FormData();
-      fd.set("folder", folder);
+      fd.set("collectionId", collectionId);
       Array.from(files).forEach((f) => fd.append("files", f));
       uploadAction(fd);
     },
-    [folder, uploadAction],
+    [collectionId, uploadAction],
   );
 
   return (
@@ -217,14 +220,14 @@ function Dropzone({
         }}
         onClick={() => inputRef.current?.click()}
         className={`rounded-cms-lg border-[1.5px] border-dashed p-7 text-center cursor-pointer transition-all duration-150
-          ${dragging ? "border-cms-accent bg-cms-accent-dim" : "border-cms-border2 hover:border-cms-accent"}`}
+          ${dragging ? "border-cms-accent bg-cms-accent-dim" : "border-cms-border-2 hover:border-cms-accent"}`}
       >
         <svg
           viewBox="0 0 24 24"
           fill="none"
           width="24"
           height="24"
-          className="text-cms-text3 mx-auto mb-2"
+          className="text-cms-text-3 mx-auto mb-2"
         >
           <path
             d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"
@@ -235,11 +238,11 @@ function Dropzone({
           />
         </svg>
         <p
-          className={`font-mono text-xs ${uploading ? "text-cms-accent" : "text-cms-text3"}`}
+          className={`font-mono text-xs ${uploading ? "text-cms-accent" : "text-cms-text-3"}`}
         >
           {uploading ? "Uploading…" : "Drop files here or click to browse"}
         </p>
-        <p className="font-mono text-[10px] text-cms-text3 mt-1">
+        <p className="font-mono text-[10px] text-cms-text-3 mt-1">
           Images, video, PDF, CSV, ZIP — max 50 MB each
         </p>
         <input
@@ -256,7 +259,7 @@ function Dropzone({
       {uploadState?.errors?.general?.map((msg) => (
         <p
           key={msg}
-          className="font-mono text-[11px] text-cms-danger bg-[rgba(224,80,80,0.08)] border border-[rgba(224,80,80,0.2)] rounded-cms px-3 py-2 mt-2.5"
+          className="font-mono text-[11px] text-cms-danger bg-[rgba(224,80,80,0.08)] border border-cms-danger-border rounded-cms px-3 py-2 mt-2.5"
         >
           {msg}
         </p>
@@ -268,9 +271,13 @@ function Dropzone({
 export function MediaGrid({
   initialItems,
   initialTotal,
+  collectionId,
+  collectionName,
 }: {
   initialItems: Media[];
   initialTotal: number;
+  collectionId: string;
+  collectionName?: string;
 }) {
   const [items, setItems] = useState<Media[]>(initialItems);
   const [search, setSearch] = useState("");
@@ -284,11 +291,13 @@ export function MediaGrid({
   });
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
+    <div className="p-8 mx-auto">
       <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
         <div>
-          <h1 className="text-lg font-medium text-cms-text">Media</h1>
-          <p className="font-mono text-[11px] text-cms-text3 mt-0.5">
+          <h1 className="text-lg font-medium text-cms-text">
+            Media{collectionName ? ` — ${collectionName}` : ""}
+          </h1>
+          <p className="font-mono text-[11px] text-cms-text-3 mt-0.5">
             {initialTotal} file{initialTotal !== 1 ? "s" : ""}
           </p>
         </div>
@@ -316,13 +325,13 @@ export function MediaGrid({
       <div className="mb-6">
         <Dropzone
           onUploaded={(newItems) => setItems((p) => [...newItems, ...p])}
-          folder="/"
+          collectionId={collectionId}
         />
       </div>
 
       {filtered.length === 0 ? (
         <div className="rounded-cms-lg border border-dashed border-cms-border px-6 py-12 text-center">
-          <p className="font-mono text-xs text-cms-text3">
+          <p className="font-mono text-xs text-cms-text-3">
             {search || typeFilter
               ? "No files match your filter."
               : "No files yet — drop some above."}

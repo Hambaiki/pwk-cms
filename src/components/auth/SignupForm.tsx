@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { useActionState } from 'react'
-import { signup } from '@/lib/actions/auth'
-import { AuthInput } from './AuthInput'
-import { AuthSubmitButton } from './AuthSubmitButton'
-import { AuthErrorAlert } from './AuthErrorAlert'
+import Link from "next/link";
+import { useActionState } from "react";
+import { signup } from "@/lib/actions/auth";
+import { AuthInput } from "./AuthInput";
+import { AuthSubmitButton } from "./AuthSubmitButton";
+import { AuthErrorAlert } from "./AuthErrorAlert";
 
 export function SignupForm() {
-  const [state, action] = useActionState(signup, undefined)
+  const [state, action] = useActionState(signup, undefined);
 
   return (
     <form action={action} className="flex flex-col gap-5" noValidate>
@@ -44,17 +44,20 @@ export function SignupForm() {
         errors={state?.errors?.password}
       />
 
-      <AuthSubmitButton label="Create Account" pendingLabel="Creating account…" />
+      <AuthSubmitButton
+        label="Create Account"
+        pendingLabel="Creating account…"
+      />
 
-      <p className="text-center text-sm text-stone-500">
-        Already have an account?{' '}
+      <p className="text-center text-sm text-cms-text-2">
+        Already have an account?{" "}
         <Link
-          href="/auth/login"
-          className="text-amber-400 underline-offset-4 hover:underline transition-colors"
+          href="/login"
+          className="text-cms-accent underline-offset-4 hover:underline transition-colors"
         >
           Sign in
         </Link>
       </p>
     </form>
-  )
+  );
 }

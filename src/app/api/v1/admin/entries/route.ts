@@ -1,14 +1,13 @@
 import { type NextRequest } from "next/server";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/lib/db";
-import { entries, collections } from "@/lib/db/schema";
+import { entries } from "@/lib/db/schema";
 import { withPrivateKey } from "@/lib/api/middleware";
-import { ok, badRequest, notFound, serverError } from "@/lib/api/response";
+import { ok, badRequest, forbidden, serverError } from "@/lib/api/response";
 import type { ApiContext } from "@/lib/api/middleware";
 
 const CreateEntrySchema = z.object({
-  collectionSlug: z.string().min(1),
   slug: z
     .string()
     .min(1)
@@ -20,6 +19,10 @@ const CreateEntrySchema = z.object({
 
 export const POST = withPrivateKey(
   async (req: NextRequest, ctx: ApiContext) => {
+    // Private key must be scoped to a collection
+    if (!ctx.collectionId)
+      return forbidden("API key is not scoped to a collection");
+
     let body: unknown;
     try {
       body = await req.json();
@@ -34,22 +37,13 @@ export const POST = withPrivateKey(
       );
     }
 
-    const { collectionSlug, slug, content, status } = validated.data;
-
-    const [collection] = await db
-      .select({ id: collections.id })
-      .from(collections)
-      .where(eq(collections.slug, collectionSlug))
-      .limit(1);
-
-    if (!collection)
-      return notFound(`Collection "${collectionSlug}" not found`);
+    const { slug, content, status } = validated.data;
 
     try {
       const [created] = await db
         .insert(entries)
         .values({
-          collectionId: collection.id,
+          collectionId: ctx.collectionId,
           slug,
           content,
           status,

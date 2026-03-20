@@ -36,13 +36,13 @@ function RevokeButton({ id }: { id: string }) {
   if (confirming) {
     return (
       <div className="flex items-center gap-1.5">
-        <span className="font-mono text-[11px] text-cms-text3">Revoke?</span>
+        <span className="font-mono text-[11px] text-cms-text-3">Revoke?</span>
         <button
           onClick={() => startTransition(() => revokeApiKey(id))}
           disabled={isPending}
           className={cn(
             baseBtnCls,
-            "border-[rgba(224,80,80,0.35)] bg-[rgba(224,80,80,0.1)] text-cms-danger disabled:opacity-60",
+            "border-[rgba(224,80,80,0.35)] bg-cms-danger-dim text-cms-danger disabled:opacity-60",
           )}
         >
           {isPending ? "…" : "Yes"}
@@ -51,7 +51,7 @@ function RevokeButton({ id }: { id: string }) {
           onClick={() => setConfirming(false)}
           className={cn(
             baseBtnCls,
-            "border-cms-border bg-transparent text-cms-text3",
+            "border-cms-border bg-transparent text-cms-text-3",
           )}
         >
           No
@@ -65,7 +65,7 @@ function RevokeButton({ id }: { id: string }) {
       onClick={() => setConfirming(true)}
       className={cn(
         baseBtnCls,
-        "border-cms-border bg-transparent text-cms-text3 hover:text-cms-danger hover:border-[rgba(224,80,80,0.35)] transition-colors",
+        "border-cms-border bg-transparent text-cms-text-3 hover:text-cms-danger hover:border-[rgba(224,80,80,0.35)] transition-colors",
       )}
     >
       Revoke
@@ -77,7 +77,7 @@ export function ApiKeyList({ keys }: { keys: ApiKeyRow[] }) {
   if (keys.length === 0) {
     return (
       <div className="rounded-cms-lg border border-dashed border-cms-border px-6 py-8 text-center">
-        <p className="font-mono text-xs text-cms-text3">
+        <p className="font-mono text-xs text-cms-text-3">
           No API keys yet — generate one below.
         </p>
       </div>
@@ -85,7 +85,7 @@ export function ApiKeyList({ keys }: { keys: ApiKeyRow[] }) {
   }
 
   const colCls =
-    "grid gap-3 px-3.5 font-mono text-[10px] tracking-[0.07em] uppercase text-cms-text3";
+    "grid gap-3 px-3.5 font-mono text-[10px] tracking-[0.07em] uppercase text-cms-text-3";
   const cols = { gridTemplateColumns: "1fr 80px 110px 110px 80px" };
 
   return (
@@ -119,7 +119,7 @@ export function ApiKeyList({ keys }: { keys: ApiKeyRow[] }) {
                 {key.name}
               </span>
               {isRevoked && (
-                <span className="font-mono text-[10px] px-1.5 py-0.5 rounded border shrink-0 bg-[rgba(224,80,80,0.08)] border-[rgba(224,80,80,0.2)] text-cms-danger">
+                <span className="font-mono text-[10px] px-1.5 py-0.5 rounded border shrink-0 bg-[rgba(224,80,80,0.08)] border-cms-danger-border text-cms-danger">
                   revoked
                 </span>
               )}
@@ -130,10 +130,10 @@ export function ApiKeyList({ keys }: { keys: ApiKeyRow[] }) {
               )}
             </div>
             <ScopeTag scope={key.scope} />
-            <span className="font-mono text-[11px] text-cms-text3">
+            <span className="font-mono text-[11px] text-cms-text-3">
               {fmt(key.createdAt)}
             </span>
-            <span className="font-mono text-[11px] text-cms-text3">
+            <span className="font-mono text-[11px] text-cms-text-3">
               {fmt(key.lastUsedAt)}
             </span>
             <div className="flex justify-end">

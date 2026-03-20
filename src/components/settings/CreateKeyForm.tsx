@@ -25,7 +25,7 @@ function KeyReveal({
   }
 
   return (
-    <div className="rounded-cms-lg border border-[rgba(232,160,48,0.3)] bg-[rgba(232,160,48,0.06)] p-5 mb-6">
+    <div className="rounded-cms-lg border border-[rgba(232,160,48,0.3)] bg-cms-accent-subtle p-5 mb-6">
       <div className="flex items-start gap-2.5 mb-4">
         <svg
           viewBox="0 0 16 16"
@@ -51,14 +51,14 @@ function KeyReveal({
           <p className="font-mono text-xs font-medium text-cms-accent mb-1">
             Copy this key now
           </p>
-          <p className="font-mono text-[11px] text-cms-text3 leading-relaxed">
-            <strong className="text-cms-text2">{name}</strong> ({scope}) was
+          <p className="font-mono text-[11px] text-cms-text-3 leading-relaxed">
+            <strong className="text-cms-text-2">{name}</strong> ({scope}) was
             created. This is the only time the full key will be shown.
           </p>
         </div>
       </div>
 
-      <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-cms border border-cms-border2 bg-cms-bg mb-3.5">
+      <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-cms border border-cms-border-2 bg-cms-bg mb-3.5">
         <code className="flex-1 font-mono text-[11px] text-cms-text break-all leading-relaxed">
           {rawKey}
         </code>
@@ -68,7 +68,7 @@ function KeyReveal({
             "shrink-0 px-3 py-1 rounded-cms border font-mono text-[11px] cursor-pointer transition-all",
             copied
               ? "border-[rgba(29,158,117,0.3)] bg-[rgba(29,158,117,0.1)] text-[#1D9E75]"
-              : "border-cms-border2 bg-cms-surface2 text-cms-text2 hover:border-cms-accent",
+              : "border-cms-border-2 bg-cms-surface-2 text-cms-text-2 hover:border-cms-accent",
           )}
         >
           {copied ? "✓ Copied" : "Copy"}
@@ -77,7 +77,7 @@ function KeyReveal({
 
       <button
         onClick={onDismiss}
-        className="font-mono text-[11px] text-cms-text3 bg-none border-none cursor-pointer underline underline-offset-2 p-0"
+        className="font-mono text-[11px] text-cms-text-3 bg-none border-none cursor-pointer underline underline-offset-2 p-0"
       >
         I've saved it, dismiss
       </button>
@@ -87,10 +87,10 @@ function KeyReveal({
 
 const inputCls = cn(
   "w-full font-mono text-xs px-2.5 py-1.5 rounded-cms border border-cms-border",
-  "bg-cms-surface2 text-cms-text outline-none focus:border-[rgba(232,160,48,0.5)] transition-colors",
+  "bg-cms-surface-2 text-cms-text outline-none focus:border-[rgba(232,160,48,0.5)] transition-colors",
 );
 
-export function CreateKeyForm() {
+export function CreateKeyForm({ collectionId }: { collectionId: string }) {
   const [state, formAction, pending] = useActionState<CreateKeyState, FormData>(
     createApiKey,
     undefined,
@@ -117,10 +117,11 @@ export function CreateKeyForm() {
       )}
 
       <form ref={formRef} action={formAction} className="space-y-3.5">
+        <input type="hidden" name="collectionId" value={collectionId} />
         {state?.errors?.general?.map((msg) => (
           <p
             key={msg}
-            className="font-mono text-xs text-cms-danger bg-[rgba(224,80,80,0.08)] border border-[rgba(224,80,80,0.2)] rounded-cms px-3 py-2"
+            className="font-mono text-xs text-cms-danger bg-[rgba(224,80,80,0.08)] border border-cms-danger-border rounded-cms px-3 py-2"
           >
             {msg}
           </p>
@@ -128,7 +129,7 @@ export function CreateKeyForm() {
 
         <div className="grid grid-cols-[1fr_130px] gap-3.5 items-end">
           <div className="space-y-1.5">
-            <label className="font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text3 block">
+            <label className="font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text-3 block">
               Key name
             </label>
             <input
@@ -148,7 +149,7 @@ export function CreateKeyForm() {
             ))}
           </div>
           <div className="space-y-1.5">
-            <label className="font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text3 block">
+            <label className="font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text-3 block">
               Scope
             </label>
             <select
@@ -163,9 +164,9 @@ export function CreateKeyForm() {
         </div>
 
         <div className="space-y-1.5">
-          <label className="font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text3 block">
+          <label className="font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text-3 block">
             Expires{" "}
-            <span className="text-cms-text3 normal-case tracking-normal font-normal">
+            <span className="text-cms-text-3 normal-case tracking-normal font-normal">
               (optional)
             </span>
           </label>

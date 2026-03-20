@@ -8,19 +8,23 @@ export default async function CollectionsPage() {
   const collections = await getCollections();
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
+    <div className="p-8 mx-auto">
+      {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-xl font-medium text-stone-100 tracking-tight">
+          <h1 className="text-xl font-medium text-cms-text tracking-tight">
             Collections
           </h1>
-          <p className="text-sm text-stone-500 mt-1">
+          <p className="text-sm text-cms-text-2 mt-1">
             Define your content types and their fields.
           </p>
         </div>
+
         <Link
           href="/cms/collections/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-stone-950 hover:bg-amber-400 transition-colors"
+          className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200
+                     bg-cms-accent text-cms-accent-text
+                     hover:brightness-110 active:scale-[0.98]"
         >
           <svg
             viewBox="0 0 16 16"
@@ -39,10 +43,11 @@ export default async function CollectionsPage() {
         </Link>
       </div>
 
+      {/* Empty state */}
       {collections.length === 0 ? (
-        <div className="rounded-xl border border-stone-800 border-dashed bg-stone-900/40 px-6 py-16 text-center">
-          <p className="text-sm text-stone-500">No collections yet.</p>
-          <p className="text-xs text-stone-600 mt-1">
+        <div className="rounded-xl border border-dashed border-cms-border bg-cms-surface/40 px-6 py-16 text-center">
+          <p className="text-sm text-cms-text-2">No collections yet.</p>
+          <p className="text-xs text-cms-text-3 mt-1">
             Create one to start defining your content structure.
           </p>
         </div>
@@ -52,33 +57,42 @@ export default async function CollectionsPage() {
             <Link
               key={col.id}
               href={`/cms/collections/${col.id}`}
-              className="group flex items-center gap-4 rounded-xl border border-stone-800 bg-stone-900/60 px-5 py-4 hover:border-stone-600 hover:bg-stone-900 transition-all"
+              className="group flex items-center gap-4 rounded-xl border border-cms-border bg-cms-surface/60 px-5 py-4 transition-all duration-200
+                         hover:border-cms-border-2 hover:bg-cms-surface"
             >
+              {/* Icon */}
               <span
                 className="text-xl w-8 text-center select-none"
                 aria-hidden="true"
               >
                 {col.icon ?? "📄"}
               </span>
+
+              {/* Content */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-stone-100">
+                  <span className="text-sm font-medium text-cms-text">
                     {col.name}
                   </span>
+
+                  {/* Page badge */}
                   {col.isPage && (
-                    <span className="rounded-full bg-purple-500/10 border border-purple-500/20 px-2 py-0.5 text-xs text-purple-400">
+                    <span className="rounded-full bg-cms-accent-subtle border border-cms-accent-border px-2 py-0.5 text-xs text-cms-accent">
                       page
                     </span>
                   )}
                 </div>
-                <span className="text-xs text-stone-500 font-mono">
+
+                <span className="text-xs text-cms-text-3 font-mono">
                   /api/v1/{col.slug}
                 </span>
               </div>
+
+              {/* Arrow */}
               <svg
                 viewBox="0 0 16 16"
                 fill="none"
-                className="w-4 h-4 text-stone-600 group-hover:text-stone-400 transition-colors shrink-0"
+                className="w-4 h-4 text-cms-text-3 group-hover:text-cms-text-2 transition-colors shrink-0"
                 aria-hidden="true"
               >
                 <path

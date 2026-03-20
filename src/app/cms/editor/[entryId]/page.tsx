@@ -15,12 +15,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function EditorPage({ params }: Props) {
   const { entryId } = await params;
-  const [result, allTags, entryTags] = await Promise.all([
-    getEntryById(entryId),
-    getTags(),
+  const result = await getEntryById(entryId);
+  if (!result) notFound();
+
+  // getTags is now collection-scoped
+  const [allTags, entryTags] = await Promise.all([
+    getTags(result.collection.id),
     getEntryTags(entryId),
   ]);
-  if (!result) notFound();
 
   return (
     <EntryEditor

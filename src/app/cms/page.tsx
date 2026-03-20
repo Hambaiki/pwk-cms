@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getCollections } from "@/lib/actions/collections";
+import { getCollections, getDashboardStats } from "@/lib/actions/collections";
 import { getCurrentUser } from "@/lib/dal";
 import { DashboardClient } from "@/components/shell/DashboardClient";
 
@@ -11,6 +11,8 @@ export default async function CMSDashboardPage() {
     getCollections(),
   ]);
 
+  const stats = await getDashboardStats(collections.map((c) => c.id));
+
   const hour = new Date().getHours();
   const greeting =
     hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
@@ -19,6 +21,7 @@ export default async function CMSDashboardPage() {
     <DashboardClient
       user={user}
       collections={collections}
+      stats={stats}
       greeting={greeting}
       today={new Date().toLocaleDateString("en-US", {
         weekday: "long",

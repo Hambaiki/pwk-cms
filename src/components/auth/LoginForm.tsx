@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { useActionState } from 'react'
-import { login } from '@/lib/actions/auth'
-import { AuthInput } from './AuthInput'
-import { AuthSubmitButton } from './AuthSubmitButton'
-import { AuthErrorAlert } from './AuthErrorAlert'
+import Link from "next/link";
+import { useActionState } from "react";
+import { login } from "@/lib/actions/auth";
+import { AuthInput } from "./AuthInput";
+import { AuthSubmitButton } from "./AuthSubmitButton";
+import { AuthErrorAlert } from "./AuthErrorAlert";
 
 export function LoginForm() {
-  const [state, action] = useActionState(login, undefined)
+  const [state, action] = useActionState(login, undefined);
 
   return (
     <form action={action} className="flex flex-col gap-5" noValidate>
@@ -37,7 +37,7 @@ export function LoginForm() {
       <div className="flex justify-end">
         <Link
           href="/forgot-password"
-          className="text-xs text-stone-500 hover:text-amber-400 transition-colors underline-offset-4 hover:underline"
+          className="text-xs text-cms-text-3 hover:text-cms-accent transition-colors underline-offset-4 hover:underline"
         >
           Forgot password?
         </Link>
@@ -45,15 +45,15 @@ export function LoginForm() {
 
       <AuthSubmitButton label="Sign In" pendingLabel="Signing in…" />
 
-      <p className="text-center text-sm text-stone-500">
-        Don&apos;t have an account?{' '}
+      <p className="text-center text-sm text-cms-text-2">
+        Don&apos;t have an account?{" "}
         <Link
-          href="/auth/signup"
-          className="text-amber-400 underline-offset-4 hover:underline transition-colors"
+          href="/signup"
+          className="text-cms-accent underline-offset-4 hover:underline transition-colors"
         >
           Create one
         </Link>
       </p>
     </form>
-  )
+  );
 }

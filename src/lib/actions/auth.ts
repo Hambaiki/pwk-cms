@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { db } from "@/lib/db";
 import { profiles } from "@/lib/db/schema";
 
-// ─── Validation Schemas ────────────────────────────────────────────────────────
+// ─── Schemas ───────────────────────────────────────────────────────────────────
 
 const SignupSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -60,35 +60,26 @@ export async function signup(
   const { email, password, displayName } = validated.data;
   const supabase = await createClient();
 
-  // 1. Create the auth user in Supabase Auth
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: {
-      // This is used if you want to pre-populate user metadata
-      data: { display_name: displayName },
-    },
+    options: { data: { display_name: displayName } },
   });
 
   if (error) {
     return { errors: { general: [error.message] } };
   }
 
-  // 2. Insert a matching profile row in your DB via Drizzle
-  // Only insert if user was created (not when email confirmation is pending & user already exists)
+  // Insert profile row — no role column in the new schema
   if (data.user) {
     await db
       .insert(profiles)
-      .values({
-        id: data.user.id,
-        displayName,
-        email,
-      })
+      .values({ id: data.user.id, displayName, email })
       .onConflictDoNothing();
   }
 
   revalidatePath("/", "layout");
-  redirect("/auth/check-email");
+  redirect("/check-email");
 }
 
 // ─── Log In ────────────────────────────────────────────────────────────────────
@@ -124,7 +115,7 @@ export async function login(
   }
 
   revalidatePath("/", "layout");
-  redirect("/dashboard");
+  redirect("/cms"); // redirect to CMS dashboard, not /dashboard
 }
 
 // ─── Log Out ───────────────────────────────────────────────────────────────────
@@ -133,5 +124,5 @@ export async function logout() {
   const supabase = await createClient();
   await supabase.auth.signOut();
   revalidatePath("/", "layout");
-  redirect("/auth/login");
+  redirect("/login");
 }

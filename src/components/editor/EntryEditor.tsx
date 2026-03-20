@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import {
   useEffect,
   useRef,
@@ -8,6 +9,7 @@ import {
   useTransition,
   useCallback,
 } from "react";
+import { createPortal } from "react-dom";
 import dynamic from "next/dynamic";
 import {
   saveEntry,
@@ -18,6 +20,7 @@ import {
 import type { EntryFormState } from "@/lib/actions/entries";
 import type { Entry, Collection, Field, Tag } from "@/lib/db/schema";
 import { EntryTagPicker } from "@/components/tags/EntryTagPicker";
+import { MediaPicker } from "@/components/media/MediaPicker";
 
 const BlockNoteEditorComponent = dynamic(() => import("./BlockNoteEditor"), {
   ssr: false,
@@ -47,7 +50,7 @@ const statusBadge = {
   },
   archived: {
     label: "archived",
-    cls: "bg-[rgba(224,80,80,0.08)] border-[rgba(224,80,80,0.2)] text-cms-danger",
+    cls: "bg-[rgba(224,80,80,0.08)] border-cms-danger-border text-cms-danger",
   },
 };
 
@@ -138,7 +141,7 @@ export function EntryEditor({
         </div>
 
         {/* BlockNote */}
-        <div className="flex-1 overflow-auto p-3">
+        <div className="flex-1 overflow-auto">
           <BlockNoteEditorComponent
             initialContent={entry.content as any}
             onChange={(c) => {
@@ -150,7 +153,7 @@ export function EntryEditor({
 
         {/* Error bar */}
         {saveState?.errors?.general && (
-          <div className="px-6 py-2 bg-[rgba(224,80,80,0.08)] border-t border-[rgba(224,80,80,0.2)] font-mono text-xs text-cms-danger">
+          <div className="px-6 py-2 bg-[rgba(224,80,80,0.08)] border-t border-cms-danger-border font-mono text-xs text-cms-danger">
             {saveState.errors.general.join(" ")}
           </div>
         )}
@@ -232,16 +235,24 @@ export function EntryEditor({
             .filter((f) => f.type !== "richtext")
             .map((field) => (
               <div key={field.id}>
-                <label className="font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text3 block mb-1.5">
-                  {field.name}
-                  {field.required && (
-                    <span className="text-cms-danger ml-0.5">*</span>
+                <div className="flex items-center gap-1.5 mb-1.5">
+                  <label className="font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text3">
+                    {field.name}
+                    {field.required && (
+                      <span className="text-cms-danger ml-0.5">*</span>
+                    )}
+                  </label>
+                  {field.type === "media" && (
+                    <span className="font-mono text-[9px] px-1 py-px rounded border border-cms-border text-cms-text-3 bg-cms-surface-2">
+                      media
+                    </span>
                   )}
-                </label>
+                </div>
                 <MetaFieldInput
                   field={field}
                   entry={entry}
                   inputCls={inputCls}
+                  collectionId={collection.id}
                 />
               </div>
             ))}
@@ -277,7 +288,7 @@ export function EntryEditor({
           {!confirmDelete ? (
             <button
               onClick={() => setConfirmDelete(true)}
-              className="w-full py-1.5 rounded-cms border border-cms-border bg-transparent text-cms-text3 font-mono text-[11px] cursor-pointer hover:text-cms-danger hover:border-[rgba(224,80,80,0.4)] transition-colors"
+              className="w-full py-1.5 rounded-cms border border-cms-border bg-transparent text-cms-text3 font-mono text-[11px] cursor-pointer hover:text-cms-danger hover:border-cms-danger-subtle transition-colors"
             >
               Delete entry
             </button>
@@ -291,7 +302,7 @@ export function EntryEditor({
                   startDelete(() => deleteEntry(entry.id, collection.slug))
                 }
                 disabled={deletePending}
-                className="py-1.5 rounded-cms border border-[rgba(224,80,80,0.4)] bg-[rgba(224,80,80,0.1)] text-cms-danger font-mono text-[11px] cursor-pointer disabled:opacity-60"
+                className="py-1.5 rounded-cms border border-cms-danger-subtle bg-cms-danger-dim text-cms-danger font-mono text-[11px] cursor-pointer disabled:opacity-60"
               >
                 {deletePending ? "Deleting…" : "Yes, delete"}
               </button>
@@ -313,10 +324,12 @@ function MetaFieldInput({
   field,
   entry,
   inputCls,
+  collectionId,
 }: {
   field: Field;
   entry: Entry;
   inputCls: string;
+  collectionId: string;
 }) {
   const content = (entry.content as Record<string, unknown>) ?? {};
   const value = content[field.slug];
@@ -378,6 +391,15 @@ function MetaFieldInput({
       />
     );
   }
+  if (field.type === "media") {
+    return (
+      <MediaFieldInput
+        fieldSlug={field.slug}
+        collectionId={collectionId}
+        initialUrl={value ? String(value) : ""}
+      />
+    );
+  }
   return (
     <input
       type="text"
@@ -385,5 +407,160 @@ function MetaFieldInput({
       defaultValue={String(value ?? "")}
       className={inputCls}
     />
+  );
+}
+
+// ─── MediaFieldInput ───────────────────────────────────────────────────────────
+// Renders a clearly interactive media picker button with thumbnail preview.
+
+function MediaFieldInput({
+  fieldSlug,
+  collectionId,
+  initialUrl,
+}: {
+  fieldSlug: string;
+  collectionId: string;
+  initialUrl: string;
+}) {
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [url, setUrl] = useState(initialUrl);
+  const isImage = url && /\.(jpg|jpeg|png|gif|webp|svg|avif)$/i.test(url);
+
+  return (
+    <>
+      <input type="hidden" name={`field_${fieldSlug}`} value={url} />
+
+      {url ? (
+        /* ── File selected — show preview + action buttons ── */
+        <div className="rounded-cms border border-cms-border overflow-hidden">
+          {/* Thumbnail */}
+          <div className="relative bg-cms-surface-3" style={{ height: "96px" }}>
+            {isImage ? (
+              <img src={url} alt="" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center gap-1">
+                <svg
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  width="20"
+                  height="20"
+                  className="text-cms-text-3"
+                >
+                  <path
+                    d="M4 4h12v12H4V4zM8 8h4M8 12h2"
+                    stroke="currentColor"
+                    strokeWidth="1.2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <span className="font-mono text-[10px] text-cms-text-3 px-2 text-center truncate w-full">
+                  {url.split("/").pop()?.split("?")[0]}
+                </span>
+              </div>
+            )}
+          </div>
+          {/* Actions row */}
+          <div className="flex items-center gap-2 px-2.5 py-2 bg-cms-surface border-t border-cms-border">
+            <button
+              type="button"
+              onClick={() => setPickerOpen(true)}
+              className="flex-1 inline-flex items-center gap-1.5 font-mono text-[11px] text-cms-text-2 hover:text-cms-text transition-colors cursor-pointer"
+            >
+              <svg viewBox="0 0 14 14" fill="none" width="12" height="12">
+                <rect
+                  x="1"
+                  y="2"
+                  width="12"
+                  height="10"
+                  rx="1.5"
+                  stroke="currentColor"
+                  strokeWidth="1.2"
+                />
+                <circle
+                  cx="4.5"
+                  cy="5.5"
+                  r="1.5"
+                  stroke="currentColor"
+                  strokeWidth="1.2"
+                />
+                <path
+                  d="M1 9l3-2.5 2.5 2 1.5-1.5 4 4"
+                  stroke="currentColor"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              Change
+            </button>
+            <button
+              type="button"
+              onClick={() => setUrl("")}
+              className="font-mono text-[11px] text-cms-text-3 hover:text-cms-danger transition-colors cursor-pointer"
+              aria-label="Remove file"
+            >
+              Remove
+            </button>
+          </div>
+        </div>
+      ) : (
+        /* ── No file — prominent picker button ── */
+        <button
+          type="button"
+          onClick={() => setPickerOpen(true)}
+          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-cms border border-dashed border-cms-border bg-cms-surface hover:border-cms-accent hover:bg-cms-accent-dim transition-colors cursor-pointer group"
+        >
+          <div className="w-7 h-7 rounded-cms flex items-center justify-center bg-cms-surface-2 border border-cms-border group-hover:border-cms-accent group-hover:text-cms-accent text-cms-text-3 transition-colors shrink-0">
+            <svg viewBox="0 0 14 14" fill="none" width="13" height="13">
+              <rect
+                x="1"
+                y="2"
+                width="12"
+                height="10"
+                rx="1.5"
+                stroke="currentColor"
+                strokeWidth="1.2"
+              />
+              <circle
+                cx="4.5"
+                cy="5.5"
+                r="1.5"
+                stroke="currentColor"
+                strokeWidth="1.2"
+              />
+              <path
+                d="M1 9l3-2.5 2.5 2 1.5-1.5 4 4"
+                stroke="currentColor"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+          <div className="text-left">
+            <p className="font-mono text-[11px] text-cms-text-2 group-hover:text-cms-text transition-colors">
+              Choose file
+            </p>
+            <p className="font-mono text-[10px] text-cms-text-3">
+              Browse media library
+            </p>
+          </div>
+        </button>
+      )}
+
+      {pickerOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <MediaPicker
+            collectionId={collectionId}
+            onSelect={(item) => {
+              setUrl(item.publicUrl);
+              setPickerOpen(false);
+            }}
+            onClose={() => setPickerOpen(false)}
+          />,
+          document.body,
+        )}
+    </>
   );
 }

@@ -43,7 +43,7 @@ export function EntryTagPicker({ entryId, initialTags, allTags }: Props) {
 
   return (
     <div>
-      <p className="font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text3 mb-2">
+      <p className="font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text-3 mb-2">
         Tags
       </p>
 
@@ -76,16 +76,16 @@ export function EntryTagPicker({ entryId, initialTags, allTags }: Props) {
       )}
 
       {allTags.length > 0 ? (
-        <div className="rounded-cms border border-cms-border bg-cms-surface2 overflow-hidden">
+        <div className="rounded-cms border border-cms-border bg-cms-surface-2 overflow-hidden">
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search tags…"
-            className="w-full font-mono text-[11px] px-2.5 py-1.5 bg-transparent text-cms-text outline-none border-b border-cms-border placeholder:text-cms-text3"
+            className="w-full font-mono text-[11px] px-2.5 py-1.5 bg-transparent text-cms-text outline-none border-b border-cms-border placeholder:text-cms-text-3"
           />
           <div className="max-h-36 overflow-y-auto">
             {filtered.length === 0 ? (
-              <p className="font-mono text-[10px] text-cms-text3 px-2.5 py-2">
+              <p className="font-mono text-[10px] text-cms-text-3 px-2.5 py-2">
                 No tags match.
               </p>
             ) : (
@@ -95,14 +95,14 @@ export function EntryTagPicker({ entryId, initialTags, allTags }: Props) {
                   <button
                     key={tag.id}
                     onClick={() => toggle(tag.id)}
-                    className="w-full flex items-center gap-2 px-2.5 py-1.5 text-left hover:bg-cms-surface3 transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-2 px-2.5 py-1.5 text-left hover:bg-cms-surface-3 transition-colors cursor-pointer"
                   >
                     <span
                       className={cn(
                         "shrink-0 w-3.5 h-3.5 rounded border flex items-center justify-center transition-colors",
                         isSelected
                           ? "bg-cms-accent border-cms-accent"
-                          : "border-cms-border2",
+                          : "border-cms-border-2",
                       )}
                     >
                       {isSelected && (
@@ -132,7 +132,7 @@ export function EntryTagPicker({ entryId, initialTags, allTags }: Props) {
           </div>
         </div>
       ) : (
-        <p className="font-mono text-[10px] text-cms-text3">
+        <p className="font-mono text-[10px] text-cms-text-3">
           No tags yet.{" "}
           <a
             href="/cms/tags"
@@ -153,7 +153,7 @@ export function EntryTagPicker({ entryId, initialTags, allTags }: Props) {
             "cursor-pointer hover:border-cms-accent hover:text-cms-accent transition-colors disabled:opacity-60",
             saved
               ? "text-[#50c878] border-[rgba(40,160,90,0.3)]"
-              : "text-cms-text3",
+              : "text-cms-text-3",
           )}
         >
           {saving ? "Saving…" : saved ? "✓ Saved" : "Apply tags"}

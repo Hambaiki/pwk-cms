@@ -1,20 +1,26 @@
 import type { ReactNode } from "react";
-import { redirect } from "next/navigation";
 import { verifySession } from "@/lib/dal";
 import { Sidebar } from "@/components/shell/Sidebar";
 import { Topbar } from "@/components/shell/Topbar";
 
 export default async function CMSLayout({ children }: { children: ReactNode }) {
-  // Gate the entire CMS behind authentication.
-  // verifySession() redirects to /login if not authenticated.
   await verifySession();
 
   return (
-    <div className="cms-shell">
+    <div className="flex h-screen overflow-hidden bg-cms-bg text-cms-text text-[13px] leading-relaxed">
       <Sidebar />
-      <div className="cms-main">
+      <div className="flex flex-col flex-1 overflow-hidden min-w-0">
         <Topbar />
-        <main className="cms-content">{children}</main>
+        <main
+          className="flex-1 overflow-y-auto bg-cms-bg scrollbar-thin scrollbar-thumb-cms-border"
+          style={{
+            backgroundImage:
+              "linear-gradient(var(--cms-border) 1px, transparent 1px), linear-gradient(90deg, var(--cms-border) 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
+          }}
+        >
+          {children}
+        </main>
       </div>
     </div>
   );

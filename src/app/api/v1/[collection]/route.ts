@@ -7,49 +7,73 @@ import {
   ok,
   paginated,
   notFound,
-  badRequest,
+  forbidden,
   parsePagination,
 } from "@/lib/api/response";
 import type { ApiContext } from "@/lib/api/middleware";
 
 export const GET = withPublicKey(
-  async (req: NextRequest, _ctx: ApiContext, params) => {
+  async (req: NextRequest, ctx: ApiContext, params) => {
     const { collection: collectionSlug } = params;
     const { searchParams } = req.nextUrl;
     const { page, limit, offset } = parsePagination(searchParams);
-
     const tagFilter = searchParams.get("tag");
 
-    // Resolve collection
-    const [collection] = await db
-      .select({
-        id: collections.id,
-        name: collections.name,
-        slug: collections.slug,
-      })
-      .from(collections)
-      .where(eq(collections.slug, collectionSlug))
-      .limit(1);
+    // In multi-tenant mode a slug is only unique per owner.
+    // If a public API key is provided, scope to that key's collection directly.
+    // If no key (anonymous), resolve by slug — only returns if exactly one
+    // collection with that slug exists (ambiguous slugs are not served anonymously).
+    let collectionId: string;
 
-    if (!collection)
-      return notFound(`Collection "${collectionSlug}" not found`);
+    if (ctx.collectionId) {
+      // Key provided — verify the slug matches the key's collection
+      const [col] = await db
+        .select({ id: collections.id, slug: collections.slug })
+        .from(collections)
+        .where(eq(collections.id, ctx.collectionId))
+        .limit(1);
 
-    // Base condition — always published only on public routes
+      if (!col) return notFound("Collection not found");
+      if (col.slug !== collectionSlug) {
+        return forbidden("This API key is not authorised for this collection");
+      }
+      collectionId = col.id;
+    } else {
+      // Anonymous — find the collection by slug (must be unambiguous)
+      const matches = await db
+        .select({ id: collections.id })
+        .from(collections)
+        .where(eq(collections.slug, collectionSlug));
+
+      if (matches.length === 0)
+        return notFound(`Collection "${collectionSlug}" not found`);
+      if (matches.length > 1) {
+        // Multiple owners have this slug — require a key to disambiguate
+        return forbidden(
+          "This collection slug is ambiguous. Provide an API key to identify the collection.",
+        );
+      }
+      collectionId = matches[0].id;
+    }
+
     const baseWhere = and(
-      eq(entries.collectionId, collection.id),
+      eq(entries.collectionId, collectionId),
       eq(entries.status, "published"),
     );
 
-    // Optional tag filter
+    // Optional tag filter — scoped to this collection
     let rows;
     if (tagFilter) {
       const [tag] = await db
         .select({ id: tags.id })
         .from(tags)
-        .where(eq(tags.slug, tagFilter))
+        .where(
+          and(eq(tags.collectionId, collectionId), eq(tags.slug, tagFilter)),
+        )
         .limit(1);
 
-      if (!tag) return ok([], 200); // tag not found = empty result
+      if (!tag)
+        return ok({ data: [], meta: { page, limit, total: 0, totalPages: 0 } });
 
       rows = await db
         .select({
@@ -86,13 +110,12 @@ export const GET = withPublicKey(
         .offset(offset);
     }
 
-    // Total count for pagination meta
     const [{ total }] = await db
       .select({ total: count() })
       .from(entries)
       .where(baseWhere);
 
-    // Attach tags to each entry
+    // Attach tags
     const entryIds = rows.map((r) => r.id);
     const tagRows =
       entryIds.length > 0
@@ -115,13 +138,13 @@ export const GET = withPublicKey(
       return acc;
     }, {});
 
-    const shaped = rows.map((entry) => ({
-      id: entry.id,
-      slug: entry.slug,
-      content: entry.content,
-      tags: tagsByEntry[entry.id] ?? [],
-      publishedAt: entry.publishedAt,
-      updatedAt: entry.updatedAt,
+    const shaped = rows.map((e) => ({
+      id: e.id,
+      slug: e.slug,
+      content: e.content,
+      tags: tagsByEntry[e.id] ?? [],
+      publishedAt: e.publishedAt,
+      updatedAt: e.updatedAt,
     }));
 
     return paginated(shaped, { page, limit, total: Number(total) });

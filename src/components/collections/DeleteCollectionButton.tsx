@@ -1,44 +1,70 @@
-'use client'
+"use client";
 
-import { useTransition, useState } from 'react'
-import { deleteCollection } from '@/lib/actions/collections'
+import { useTransition, useState } from "react";
+import { deleteCollection } from "@/lib/actions/collections";
+import { cn } from "@/lib/utils";
 
 type Props = {
-  collectionId: string
-  collectionName: string
-}
+  collectionId: string;
+  collectionName: string;
+};
 
-export function DeleteCollectionButton({ collectionId, collectionName }: Props) {
-  const [isPending, startTransition] = useTransition()
-  const [confirming, setConfirming] = useState(false)
+export function DeleteCollectionButton({
+  collectionId,
+  collectionName,
+}: Props) {
+  const [isPending, startTransition] = useTransition();
+  const [confirming, setConfirming] = useState(false);
+
+  const baseBtnCls =
+    "rounded-cms border px-3 py-1.5 font-mono text-[11px] cursor-pointer transition-all duration-200";
 
   if (confirming) {
     return (
       <div className="flex items-center gap-2">
-        <span className="text-xs text-stone-400">Delete &ldquo;{collectionName}&rdquo;?</span>
+        <span className="font-mono text-xs text-cms-text-3">
+          Delete &ldquo;{collectionName}&rdquo;?
+        </span>
+
+        {/* Confirm delete */}
         <button
           onClick={() => startTransition(() => deleteCollection(collectionId))}
           disabled={isPending}
-          className="rounded-lg bg-red-500/10 border border-red-500/30 px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/20 transition-colors disabled:opacity-50"
+          className={cn(
+            baseBtnCls,
+            "border-cms-danger-border bg-cms-danger-subtle text-cms-danger",
+            "hover:bg-cms-danger-dim active:scale-[0.98]",
+            "disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100",
+          )}
         >
-          {isPending ? 'Deleting…' : 'Yes, delete'}
+          {isPending ? "Deleting…" : "Yes, delete"}
         </button>
+
+        {/* Cancel */}
         <button
           onClick={() => setConfirming(false)}
-          className="rounded-lg border border-stone-700 px-3 py-1.5 text-xs text-stone-400 hover:text-stone-200 transition-colors"
+          className={cn(
+            baseBtnCls,
+            "border-cms-border bg-transparent text-cms-text-3",
+            "hover:text-cms-text hover:border-cms-border-2",
+          )}
         >
           Cancel
         </button>
       </div>
-    )
+    );
   }
 
   return (
     <button
       onClick={() => setConfirming(true)}
-      className="rounded-lg border border-stone-800 px-3 py-1.5 text-xs text-stone-500 hover:border-red-500/40 hover:text-red-400 transition-colors"
+      className={cn(
+        baseBtnCls,
+        "border-cms-border bg-transparent text-cms-text-3",
+        "hover:border-cms-danger-border hover:text-cms-danger",
+      )}
     >
       Delete collection
     </button>
-  )
+  );
 }

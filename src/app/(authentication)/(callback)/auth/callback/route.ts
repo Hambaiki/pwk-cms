@@ -9,13 +9,13 @@ import { createClient } from "@/lib/supabase/server";
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/dashboard";
+  const next = searchParams.get("next") ?? "/cms";
   const error = searchParams.get("error");
   const errorDescription = searchParams.get("error_description");
 
   // If Supabase returned an error (e.g. link expired)
   if (error) {
-    const url = new URL("/auth/login", origin);
+    const url = new URL("/login", origin);
     url.searchParams.set("error", errorDescription ?? error);
     return NextResponse.redirect(url);
   }
@@ -26,12 +26,12 @@ export async function GET(request: Request) {
       await supabase.auth.exchangeCodeForSession(code);
 
     if (exchangeError) {
-      const url = new URL("/auth/login", origin);
+      const url = new URL("/login", origin);
       url.searchParams.set("error", exchangeError.message);
       return NextResponse.redirect(url);
     }
   }
 
-  // Redirect to the intended destination (defaults to /dashboard)
+  // Redirect to the intended destination (defaults to /cms)
   return NextResponse.redirect(new URL(next, origin));
 }
