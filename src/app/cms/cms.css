@@ -1,72 +1,34 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap");
+/* ─── Fonts ─────────────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap');
 
-@import "tailwindcss";
-
-/* ─── Tailwind v4 theme — CMS design tokens ─────────────────────────────────
-   All --cms-* variables are declared here as CSS custom properties and then
-   exposed as Tailwind utilities via @theme so you can use them as classes:
-   text-cms-text, bg-cms-surface, border-cms-border, font-cms-mono, etc.
-──────────────────────────────────────────────────────────────────────────── */
-
-@theme {
-  /* Colors */
-  --color-cms-bg: #0d0d0e;
-  --color-cms-surface: #141416;
-  --color-cms-surface-2: #1a1a1d;
-  --color-cms-surface-3: #202024;
-  --color-cms-border: rgba(255, 255, 255, 0.07);
-  --color-cms-border-2: rgba(255, 255, 255, 0.12);
-  --color-cms-text: #e8e6e0;
-  --color-cms-text-2: #9e9b94;
-  --color-cms-text-3: #5a5855;
-  --color-cms-accent: #e8a030;
-  --color-cms-accent-dim: rgba(232, 160, 48, 0.12);
-  --color-cms-accent-text: #1a1108;
-  --color-cms-danger: #e05050;
-  --color-cms-danger-dim: rgba(224, 80, 80, 0.1);
-
-  /* Font families */
-  --font-cms-mono: "IBM Plex Mono", monospace;
-  --font-cms-serif: "Instrument Serif", serif;
-
-  /* Border radius */
-  --radius-cms: 8px;
-  --radius-cms-lg: 10px;
-  --radius-cms-xl: 12px;
-}
-
-/* ─── Raw CSS variables (used by cms.css class selectors below) ───────────────
-   These mirror the @theme tokens so legacy .cms-* class selectors still work.
-──────────────────────────────────────────────────────────────────────────── */
-
+/* ─── CMS Design Tokens ─────────────────────────────────────────────────────── */
 :root {
   --cms-sidebar-w: 220px;
   --cms-topbar-h: 44px;
 
-  --cms-bg: var(--color-cms-bg);
-  --cms-surface: var(--color-cms-surface);
-  --cms-surface-2: var(--color-cms-surface-2);
-  --cms-surface-3: var(--color-cms-surface-3);
-  --cms-border: var(--color-cms-border);
-  --cms-border-2: var(--color-cms-border-2);
+  --cms-bg:          #0d0d0e;
+  --cms-surface:     #141416;
+  --cms-surface-2:   #1a1a1d;
+  --cms-surface-3:   #202024;
+  --cms-border:      rgba(255,255,255,0.07);
+  --cms-border-2:    rgba(255,255,255,0.12);
 
-  --cms-text: var(--color-cms-text);
-  --cms-text-2: var(--color-cms-text-2);
-  --cms-text-3: var(--color-cms-text-3);
+  --cms-text:        #e8e6e0;
+  --cms-text-2:      #9e9b94;
+  --cms-text-3:      #5a5855;
 
-  --cms-accent: var(--color-cms-accent);
-  --cms-accent-dim: var(--color-cms-accent-dim);
-  --cms-accent-text: var(--color-cms-accent-text);
+  --cms-accent:      #e8a030;
+  --cms-accent-dim:  rgba(232, 160, 48, 0.12);
+  --cms-accent-text: #1a1108;
 
-  --cms-danger: var(--color-cms-danger);
-  --cms-danger-dim: var(--color-cms-danger-dim);
+  --cms-danger:      #e05050;
+  --cms-danger-dim:  rgba(224, 80, 80, 0.1);
 
-  --cms-mono: var(--font-cms-mono);
-  --cms-serif: var(--font-cms-serif);
+  --cms-mono: 'IBM Plex Mono', monospace;
+  --cms-serif: 'Instrument Serif', serif;
 }
 
-/* ─── CMS Shell layout ───────────────────────────────────────────────────────*/
-
+/* ─── Shell structure ───────────────────────────────────────────────────────── */
 .cms-shell {
   display: flex;
   height: 100vh;
@@ -77,7 +39,7 @@
   line-height: 1.5;
 }
 
-/* Sidebar */
+/* ─── Sidebar ───────────────────────────────────────────────────────────────── */
 .cms-sidebar {
   width: var(--cms-sidebar-w);
   flex-shrink: 0;
@@ -87,15 +49,15 @@
   background: var(--cms-surface);
   border-right: 1px solid var(--cms-border);
   overflow: hidden;
-  background-image: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.03) 1px,
-    transparent 1px
-  );
+
+  /* Subtle dot grid texture */
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
   background-size: 20px 20px;
   background-color: var(--cms-surface);
 }
 
+/* Brand */
 .cms-brand {
   display: flex;
   align-items: center;
@@ -161,9 +123,7 @@
   display: flex;
   align-items: center;
 }
-.cms-nav-add:hover {
-  color: var(--cms-accent);
-}
+.cms-nav-add:hover { color: var(--cms-accent); }
 
 .cms-nav-empty {
   padding: 4px 16px 8px;
@@ -180,9 +140,8 @@
   font-size: 12.5px;
   color: var(--cms-text-2);
   text-decoration: none;
-  transition:
-    color 0.12s,
-    background 0.12s;
+  border-radius: 0;
+  transition: color 0.12s, background 0.12s;
   cursor: pointer;
   border: none;
   background: none;
@@ -191,27 +150,18 @@
   position: relative;
 }
 
-/* Non-interactive collection label row in the nav */
-.cms-nav-collection-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 16px;
-  font-size: 12.5px;
-  color: var(--cms-text-2);
-  cursor: default;
-  position: relative;
-}
 .cms-nav-item:hover {
   color: var(--cms-text);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255,255,255,0.04);
 }
+
 .cms-nav-item.active {
   color: var(--cms-text);
   background: var(--cms-accent-dim);
 }
+
 .cms-nav-item.active::before {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   top: 4px;
@@ -220,6 +170,7 @@
   background: var(--cms-accent);
   border-radius: 0 2px 2px 0;
 }
+
 .cms-nav-item svg {
   flex-shrink: 0;
   opacity: 0.6;
@@ -235,6 +186,7 @@
   text-align: center;
   flex-shrink: 0;
 }
+
 .cms-nav-col-name {
   flex: 1;
   overflow: hidden;
@@ -258,6 +210,7 @@
   border-top: 1px solid var(--cms-border) !important;
   border-bottom: none !important;
 }
+
 .cms-nav-signout {
   color: var(--cms-text-3) !important;
 }
@@ -275,12 +228,13 @@
   border-top: 1px solid var(--cms-border);
   flex-shrink: 0;
 }
+
 .cms-user-avatar {
   width: 26px;
   height: 26px;
   border-radius: 6px;
   background: var(--cms-accent-dim);
-  border: 1px solid rgba(232, 160, 48, 0.2);
+  border: 1px solid rgba(232,160,48,0.2);
   color: var(--cms-accent);
   font-family: var(--cms-mono);
   font-size: 11px;
@@ -290,9 +244,11 @@
   justify-content: center;
   flex-shrink: 0;
 }
+
 .cms-user-info {
   min-width: 0;
 }
+
 .cms-user-email {
   font-size: 11px;
   color: var(--cms-text-3);
@@ -303,7 +259,7 @@
   display: block;
 }
 
-/* Main + topbar */
+/* ─── Main area ─────────────────────────────────────────────────────────────── */
 .cms-main {
   flex: 1;
   display: flex;
@@ -312,6 +268,7 @@
   min-width: 0;
 }
 
+/* ─── Topbar ────────────────────────────────────────────────────────────────── */
 .cms-topbar {
   height: var(--cms-topbar-h);
   flex-shrink: 0;
@@ -327,16 +284,19 @@
   align-items: center;
   gap: 0;
 }
+
 .cms-breadcrumb-item {
   display: flex;
   align-items: center;
 }
+
 .cms-breadcrumb-sep {
   color: var(--cms-text-3);
   font-family: var(--cms-mono);
   font-size: 12px;
   margin: 0 6px;
 }
+
 .cms-breadcrumb-link {
   font-family: var(--cms-mono);
   font-size: 12px;
@@ -344,20 +304,21 @@
   text-decoration: none;
   transition: color 0.12s;
 }
-.cms-breadcrumb-link:hover {
-  color: var(--cms-text-2);
-}
+.cms-breadcrumb-link:hover { color: var(--cms-text-2); }
+
 .cms-breadcrumb-current {
   font-family: var(--cms-mono);
   font-size: 12px;
   color: var(--cms-text-2);
 }
 
-/* Content area */
+/* ─── Content ───────────────────────────────────────────────────────────────── */
 .cms-content {
   flex: 1;
   overflow-y: auto;
   background: var(--cms-bg);
+
+  /* Very subtle grid lines for the content area */
   background-image:
     linear-gradient(var(--cms-border) 1px, transparent 1px),
     linear-gradient(90deg, var(--cms-border) 1px, transparent 1px);
@@ -367,8 +328,12 @@
   scrollbar-color: var(--cms-border) transparent;
 }
 
-/* ─── Utility classes used across CMS pages ──────────────────────────────────*/
+/* ─── Utility: reuse in child pages ────────────────────────────────────────── */
 
+/* Monospaced inline code (API paths, slugs, etc.) */
+.cms-mono { font-family: var(--cms-mono); }
+
+/* Status badges */
 .cms-badge {
   display: inline-flex;
   align-items: center;
@@ -378,22 +343,11 @@
   border-radius: 3px;
   border: 1px solid;
 }
-.cms-badge-draft {
-  background: rgba(90, 88, 85, 0.15);
-  border-color: rgba(90, 88, 85, 0.3);
-  color: #9e9b94;
-}
-.cms-badge-published {
-  background: rgba(40, 160, 90, 0.1);
-  border-color: rgba(40, 160, 90, 0.25);
-  color: #50c878;
-}
-.cms-badge-archived {
-  background: rgba(224, 80, 80, 0.08);
-  border-color: rgba(224, 80, 80, 0.2);
-  color: #e05050;
-}
+.cms-badge-draft     { background: rgba(90,88,85,0.15);  border-color: rgba(90,88,85,0.3);   color: #9e9b94; }
+.cms-badge-published { background: rgba(40,160,90,0.1);  border-color: rgba(40,160,90,0.25); color: #50c878; }
+.cms-badge-archived  { background: rgba(224,80,80,0.08); border-color: rgba(224,80,80,0.2);  color: #e05050; }
 
+/* Page section heading */
 .cms-section-label {
   font-family: var(--cms-mono);
   font-size: 10px;
@@ -404,6 +358,7 @@
   margin-bottom: 12px;
 }
 
+/* ─── Dashboard page ────────────────────────────────────────────────────────── */
 .cms-dashboard-welcome {
   font-family: var(--cms-serif);
   font-size: 28px;
