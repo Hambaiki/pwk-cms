@@ -55,10 +55,10 @@ function MediaCard({
           )}
         </div>
         <div className="px-2.5 py-2">
-          <p className="font-mono text-[11px] text-cms-text-2 overflow-hidden text-ellipsis whitespace-nowrap mb-0.5">
+          <p className="font-mono text-sm text-cms-text-2 overflow-hidden text-ellipsis whitespace-nowrap mb-0.5">
             {item.filename}
           </p>
-          <p className="font-mono text-[10px] text-cms-text-3">
+          <p className="font-mono text-xs text-cms-text-3">
             {fmtSize(item.size)}
           </p>
         </div>
@@ -101,7 +101,7 @@ function MediaCard({
                   ],
                 ].map(([label, value]) => (
                   <div key={label}>
-                    <p className="font-mono text-[10px] tracking-[0.07em] uppercase text-cms-text-3 mb-0.5">
+                    <p className="font-mono text-xs tracking-[0.07em] uppercase text-cms-text-3 mb-0.5">
                       {label}
                     </p>
                     <p className="font-mono text-xs text-cms-text-2">{value}</p>
@@ -111,7 +111,7 @@ function MediaCard({
 
               {/* Alt text */}
               <div>
-                <p className="font-mono text-[10px] tracking-[0.07em] uppercase text-cms-text-3 mb-1.5">
+                <p className="font-mono text-xs tracking-[0.07em] uppercase text-cms-text-3 mb-1.5">
                   Alt text
                 </p>
                 <div className="flex gap-2">
@@ -129,7 +129,7 @@ function MediaCard({
                       })
                     }
                     disabled={altSaving}
-                    className="px-3.5 py-1.5 rounded-cms bg-cms-accent text-cms-accent-text font-mono text-[11px] font-medium border-none cursor-pointer disabled:opacity-60"
+                    className="px-3.5 py-1.5 rounded-cms bg-cms-accent text-cms-accent-text font-mono text-sm font-medium border-none cursor-pointer disabled:opacity-60"
                   >
                     {altSaving ? "Saving…" : "Save"}
                   </button>
@@ -138,12 +138,12 @@ function MediaCard({
 
               {/* Actions */}
               <div className="flex items-center gap-2">
-                <code className="flex-1 font-mono text-[10px] text-cms-text-3 overflow-hidden text-ellipsis whitespace-nowrap">
+                <code className="flex-1 font-mono text-xs text-cms-text-3 overflow-hidden text-ellipsis whitespace-nowrap">
                   {item.publicUrl}
                 </code>
                 <button
                   onClick={() => navigator.clipboard.writeText(item.publicUrl)}
-                  className="shrink-0 px-2.5 py-1 rounded border border-cms-border bg-transparent text-cms-text-3 font-mono text-[10px] cursor-pointer hover:border-cms-border-2 transition-colors"
+                  className="shrink-0 px-2.5 py-1 rounded border border-cms-border bg-transparent text-cms-text-3 font-mono text-xs cursor-pointer hover:border-cms-border-2 transition-colors"
                 >
                   Copy URL
                 </button>
@@ -158,13 +158,13 @@ function MediaCard({
                     })
                   }
                   disabled={deleting}
-                  className="shrink-0 px-2.5 py-1 rounded border border-[rgba(224,80,80,0.3)] bg-[rgba(224,80,80,0.06)] text-cms-danger font-mono text-[10px] cursor-pointer disabled:opacity-60"
+                  className="shrink-0 px-2.5 py-1 rounded border border-[rgba(224,80,80,0.3)] bg-[rgba(224,80,80,0.06)] text-cms-danger font-mono text-xs cursor-pointer disabled:opacity-60"
                 >
                   {deleting ? "Deleting…" : "Delete"}
                 </button>
                 <button
                   onClick={() => setShowDetail(false)}
-                  className="shrink-0 px-2.5 py-1 rounded border border-cms-border bg-transparent text-cms-text-3 font-mono text-[10px] cursor-pointer hover:border-cms-border-2 transition-colors"
+                  className="shrink-0 px-2.5 py-1 rounded border border-cms-border bg-transparent text-cms-text-3 font-mono text-xs cursor-pointer hover:border-cms-border-2 transition-colors"
                 >
                   Close
                 </button>
@@ -242,7 +242,7 @@ function Dropzone({
         >
           {uploading ? "Uploading…" : "Drop files here or click to browse"}
         </p>
-        <p className="font-mono text-[10px] text-cms-text-3 mt-1">
+        <p className="font-mono text-xs text-cms-text-3 mt-1">
           Images, video, PDF, CSV, ZIP — max 50 MB each
         </p>
         <input
@@ -259,7 +259,7 @@ function Dropzone({
       {uploadState?.errors?.general?.map((msg) => (
         <p
           key={msg}
-          className="font-mono text-[11px] text-cms-danger bg-[rgba(224,80,80,0.08)] border border-cms-danger-border rounded-cms px-3 py-2 mt-2.5"
+          className="font-mono text-sm text-cms-danger bg-[rgba(224,80,80,0.08)] border border-cms-danger-border rounded-cms px-3 py-2 mt-2.5"
         >
           {msg}
         </p>
@@ -297,7 +297,7 @@ export function MediaGrid({
           <h1 className="text-lg font-medium text-cms-text">
             Media{collectionName ? ` — ${collectionName}` : ""}
           </h1>
-          <p className="font-mono text-[11px] text-cms-text-3 mt-0.5">
+          <p className="font-mono text-sm text-cms-text-3 mt-0.5">
             {initialTotal} file{initialTotal !== 1 ? "s" : ""}
           </p>
         </div>

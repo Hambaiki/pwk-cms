@@ -50,7 +50,7 @@ function SubPageCard({
       <div className="text-cms-text-3 shrink-0">{icon}</div>
       <div className="flex-1 min-w-0">
         <p className="font-mono text-xs font-medium text-cms-text">{label}</p>
-        <p className="font-mono text-[11px] text-cms-text-3 mt-0.5">
+        <p className="font-mono text-sm text-cms-text-3 mt-0.5">
           {description}
         </p>
       </div>
@@ -99,23 +99,23 @@ export default async function CollectionOverviewPage({ params }: Props) {
               </h1>
               <span
                 className={cn(
-                  "font-mono text-[10px] px-1.5 py-0.5 rounded border",
+                  "font-mono text-xs px-1.5 py-0.5 rounded border",
                   roleStyle[role],
                 )}
               >
                 {role}
               </span>
               {collection.isPage && (
-                <span className="font-mono text-[9px] px-1.5 py-px rounded bg-[rgba(130,90,220,0.15)] border border-[rgba(130,90,220,0.25)] text-[#a080e8]">
+                <span className="font-mono text-xxs px-1.5 py-px rounded bg-[rgba(130,90,220,0.15)] border border-[rgba(130,90,220,0.25)] text-[#a080e8]">
                   page
                 </span>
               )}
             </div>
-            <code className="font-mono text-[11px] text-cms-text-3">
+            <code className="font-mono text-sm text-cms-text-3">
               /api/v1/{collection.slug}
             </code>
             {collection.description && (
-              <p className="font-mono text-[11px] text-cms-text-3 mt-0.5">
+              <p className="font-mono text-sm text-cms-text-3 mt-0.5">
                 {collection.description}
               </p>
             )}
@@ -143,7 +143,7 @@ export default async function CollectionOverviewPage({ params }: Props) {
             <div className="font-mono text-xl font-medium text-cms-accent leading-none">
               {value}
             </div>
-            <div className="font-mono text-[10px] tracking-widest uppercase text-cms-text-3 mt-1">
+            <div className="font-mono text-xs tracking-widest uppercase text-cms-text-3 mt-1">
               {label}
             </div>
           </div>
@@ -152,7 +152,7 @@ export default async function CollectionOverviewPage({ params }: Props) {
 
       {/* ── Quick actions ─────────────────────────────────────────── */}
       <div className="rounded-cms-lg border border-cms-border bg-cms-surface p-5">
-        <p className="font-mono text-[10px] tracking-widest uppercase text-cms-text-3 mb-3">
+        <p className="font-mono text-xs tracking-widest uppercase text-cms-text-3 mb-3">
           Quick actions
         </p>
         <div className="flex items-center gap-2 flex-wrap">
@@ -213,7 +213,7 @@ export default async function CollectionOverviewPage({ params }: Props) {
 
       {/* ── Sub-page cards ────────────────────────────────────────── */}
       <div className="space-y-2">
-        <p className="font-mono text-[10px] tracking-widest uppercase text-cms-text-3">
+        <p className="font-mono text-xs tracking-widest uppercase text-cms-text-3">
           Manage
         </p>
 
@@ -306,7 +306,7 @@ export default async function CollectionOverviewPage({ params }: Props) {
       {/* ── Settings (owner only) ─────────────────────────────────── */}
       {isOwner && (
         <div className="space-y-3">
-          <p className="font-mono text-[10px] tracking-widest uppercase text-cms-text-3">
+          <p className="font-mono text-xs tracking-widest uppercase text-cms-text-3">
             Settings
           </p>
           <div className="rounded-cms-lg border border-cms-border bg-cms-surface p-6">

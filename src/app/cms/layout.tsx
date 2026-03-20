@@ -7,7 +7,7 @@ export default async function CMSLayout({ children }: { children: ReactNode }) {
   await verifySession();
 
   return (
-    <div className="flex h-screen overflow-hidden bg-cms-bg text-cms-text text-[13px] leading-relaxed">
+    <div className="flex h-screen overflow-hidden bg-cms-bg text-cms-text text-base leading-relaxed">
       <Sidebar />
       <div className="flex flex-col flex-1 overflow-hidden min-w-0">
         <Topbar />

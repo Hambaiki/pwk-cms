@@ -24,13 +24,13 @@ function CodeBlock({ code, lang = "json" }: { code: string; lang?: string }) {
   return (
     <div className="relative rounded-cms-lg border border-cms-border bg-cms-bg overflow-hidden">
       <div className="flex items-center justify-between px-4 py-2 border-b border-cms-border">
-        <span className="font-mono text-[10px] tracking-[0.07em] uppercase text-cms-text3">
+        <span className="font-mono text-xs tracking-[0.07em] uppercase text-cms-text3">
           {lang}
         </span>
         <button
           onClick={handleCopy}
           className={cn(
-            "font-mono text-[10px] px-2 py-0.5 rounded border transition-colors cursor-pointer",
+            "font-mono text-xs px-2 py-0.5 rounded border transition-colors cursor-pointer",
             copied
               ? "border-[rgba(40,160,90,0.3)] text-[#50c878] bg-cms-success-subtle"
               : "border-cms-border text-cms-text3 hover:border-cms-border2 hover:text-cms-text2",
@@ -39,7 +39,7 @@ function CodeBlock({ code, lang = "json" }: { code: string; lang?: string }) {
           {copied ? "✓ Copied" : "Copy"}
         </button>
       </div>
-      <pre className="overflow-x-auto px-4 py-4 font-mono text-[11px] text-cms-text2 leading-relaxed whitespace-pre">
+      <pre className="overflow-x-auto px-4 py-4 font-mono text-sm text-cms-text2 leading-relaxed whitespace-pre">
         {code}
       </pre>
     </div>
@@ -62,7 +62,7 @@ function MethodBadge({
   return (
     <span
       className={cn(
-        "font-mono text-[10px] font-medium px-2 py-0.5 rounded border shrink-0",
+        "font-mono text-xs font-medium px-2 py-0.5 rounded border shrink-0",
         colours[method],
       )}
     >
@@ -85,7 +85,7 @@ function EndpointRow({
       <MethodBadge method={method} />
       <div className="min-w-0">
         <code className="font-mono text-xs text-cms-text">{path}</code>
-        <p className="font-mono text-[11px] text-cms-text3 mt-0.5">
+        <p className="font-mono text-sm text-cms-text3 mt-0.5">
           {description}
         </p>
       </div>
@@ -102,7 +102,7 @@ function Section({
 }) {
   return (
     <section className="space-y-4">
-      <h2 className="font-mono text-[10px] tracking-widest uppercase text-cms-text3">
+      <h2 className="font-mono text-xs tracking-widest uppercase text-cms-text3">
         {title}
       </h2>
       {children}
@@ -169,7 +169,7 @@ export function ApiDocsClient({ collection, fields, origin }: Props) {
             {collection.name} — API Reference
           </h1>
         </div>
-        <p className="font-mono text-[11px] text-cms-text3">
+        <p className="font-mono text-sm text-cms-text3">
           Base URL: <code className="text-cms-text2">{baseUrl}</code>
         </p>
       </div>
@@ -184,7 +184,7 @@ export function ApiDocsClient({ collection, fields, origin }: Props) {
           </div>
           <div className="p-4 space-y-3">
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.07em] text-cms-text3 mb-1.5">
+              <p className="font-mono text-xs uppercase tracking-[0.07em] text-cms-text3 mb-1.5">
                 Authorization header
               </p>
               <CodeBlock
@@ -193,7 +193,7 @@ export function ApiDocsClient({ collection, fields, origin }: Props) {
               />
             </div>
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.07em] text-cms-text3 mb-1.5">
+              <p className="font-mono text-xs uppercase tracking-[0.07em] text-cms-text3 mb-1.5">
                 X-API-Key header
               </p>
               <CodeBlock
@@ -204,18 +204,18 @@ export function ApiDocsClient({ collection, fields, origin }: Props) {
           </div>
           <div className="px-4 py-3 border-t border-cms-border bg-cms-surface2 grid grid-cols-2 gap-4">
             <div>
-              <p className="font-mono text-[10px] text-cms-accent mb-1">
+              <p className="font-mono text-xs text-cms-accent mb-1">
                 Public key <code className="text-cms-text3">pwk_pub_…</code>
               </p>
-              <p className="font-mono text-[11px] text-cms-text3">
+              <p className="font-mono text-sm text-cms-text3">
                 Read published entries only. Safe to use in frontend code.
               </p>
             </div>
             <div>
-              <p className="font-mono text-[10px] text-[#7F77DD] mb-1">
+              <p className="font-mono text-xs text-[#7F77DD] mb-1">
                 Private key <code className="text-cms-text3">pwk_prv_…</code>
               </p>
-              <p className="font-mono text-[11px] text-cms-text3">
+              <p className="font-mono text-sm text-cms-text3">
                 Full read/write access. Never expose in client-side code.
               </p>
             </div>
@@ -266,7 +266,7 @@ export function ApiDocsClient({ collection, fields, origin }: Props) {
             code={`GET ${baseUrl}\n\n# With filters\nGET ${baseUrl}?page=1&limit=20&tag=featured`}
             lang="http"
           />
-          <p className="font-mono text-[11px] text-cms-text3">Response:</p>
+          <p className="font-mono text-sm text-cms-text3">Response:</p>
           <CodeBlock code={JSON.stringify(listResponse, null, 2)} lang="json" />
         </div>
       </Section>
@@ -275,7 +275,7 @@ export function ApiDocsClient({ collection, fields, origin }: Props) {
       <Section title="GET — Single entry">
         <div className="space-y-3">
           <CodeBlock code={`GET ${baseUrl}/example-slug`} lang="http" />
-          <p className="font-mono text-[11px] text-cms-text3">Response:</p>
+          <p className="font-mono text-sm text-cms-text3">Response:</p>
           <CodeBlock
             code={JSON.stringify({ data: exampleEntry }, null, 2)}
             lang="json"
@@ -287,7 +287,7 @@ export function ApiDocsClient({ collection, fields, origin }: Props) {
       <Section title="POST — Create entry">
         <div className="space-y-3">
           <div className="rounded-cms-lg border border-cms-danger-border bg-[rgba(224,80,80,0.04)] px-4 py-3">
-            <p className="font-mono text-[11px] text-cms-danger">
+            <p className="font-mono text-sm text-cms-danger">
               Requires a private API key.
             </p>
           </div>
@@ -295,7 +295,7 @@ export function ApiDocsClient({ collection, fields, origin }: Props) {
             code={`POST https://your-domain.com/api/v1/admin/entries\nContent-Type: application/json\nAuthorization: Bearer pwk_prv_your_key_here`}
             lang="http"
           />
-          <p className="font-mono text-[11px] text-cms-text3">Request body:</p>
+          <p className="font-mono text-sm text-cms-text3">Request body:</p>
           <CodeBlock code={JSON.stringify(createBody, null, 2)} lang="json" />
         </div>
       </Section>
@@ -304,7 +304,7 @@ export function ApiDocsClient({ collection, fields, origin }: Props) {
       <Section title="PATCH — Update entry">
         <div className="space-y-3">
           <div className="rounded-cms-lg border border-cms-danger-border bg-[rgba(224,80,80,0.04)] px-4 py-3">
-            <p className="font-mono text-[11px] text-cms-danger">
+            <p className="font-mono text-sm text-cms-danger">
               Requires a private API key.
             </p>
           </div>
@@ -312,7 +312,7 @@ export function ApiDocsClient({ collection, fields, origin }: Props) {
             code={`PATCH https://your-domain.com/api/v1/admin/entries/{id}\nContent-Type: application/json\nAuthorization: Bearer pwk_prv_your_key_here`}
             lang="http"
           />
-          <p className="font-mono text-[11px] text-cms-text3">
+          <p className="font-mono text-sm text-cms-text3">
             Request body (all fields optional):
           </p>
           <CodeBlock
@@ -339,13 +339,13 @@ export function ApiDocsClient({ collection, fields, origin }: Props) {
               style={{ gridTemplateColumns: "1fr 100px 60px 60px" }}
             >
               <div
-                className="grid gap-0 col-span-4 grid-cols-subgrid px-4 py-2 border-b border-cms-border bg-cms-surface2 font-mono text-[10px] tracking-[0.07em] uppercase text-cms-text3"
+                className="grid gap-0 col-span-4 grid-cols-subgrid px-4 py-2 border-b border-cms-border bg-cms-surface2 font-mono text-xs tracking-[0.07em] uppercase text-cms-text3"
                 style={{ display: "contents" }}
               >
                 {/* header row */}
               </div>
               <div
-                className="grid px-4 py-1.5 border-b border-cms-border font-mono text-[10px] tracking-[0.07em] uppercase text-cms-text3"
+                className="grid px-4 py-1.5 border-b border-cms-border font-mono text-xs tracking-[0.07em] uppercase text-cms-text3"
                 style={{
                   gridColumn: "1",
                   display: "grid",
@@ -356,7 +356,7 @@ export function ApiDocsClient({ collection, fields, origin }: Props) {
             {/* Simple table */}
             <div>
               <div
-                className="grid px-4 py-1.5 border-b border-cms-border font-mono text-[10px] tracking-[0.07em] uppercase text-cms-text3"
+                className="grid px-4 py-1.5 border-b border-cms-border font-mono text-xs tracking-[0.07em] uppercase text-cms-text3"
                 style={{ gridTemplateColumns: "1fr 100px 60px 60px" }}
               >
                 <span>Field</span>
@@ -373,12 +373,12 @@ export function ApiDocsClient({ collection, fields, origin }: Props) {
                   <code className="font-mono text-xs text-cms-text">
                     {f.slug}
                   </code>
-                  <span className="font-mono text-[11px] text-cms-text3">
+                  <span className="font-mono text-sm text-cms-text3">
                     {f.type}
                   </span>
                   <span
                     className={cn(
-                      "font-mono text-[10px]",
+                      "font-mono text-xs",
                       f.required ? "text-cms-danger" : "text-cms-text3",
                     )}
                   >
@@ -386,7 +386,7 @@ export function ApiDocsClient({ collection, fields, origin }: Props) {
                   </span>
                   <span
                     className={cn(
-                      "font-mono text-[10px]",
+                      "font-mono text-xs",
                       f.multiple ? "text-cms-accent" : "text-cms-text3",
                     )}
                   >
@@ -429,7 +429,7 @@ export function ApiDocsClient({ collection, fields, origin }: Props) {
               <code className="font-mono text-xs text-cms-text shrink-0 w-32">
                 {status}
               </code>
-              <p className="font-mono text-[11px] text-cms-text3">{desc}</p>
+              <p className="font-mono text-sm text-cms-text3">{desc}</p>
             </div>
           ))}
         </div>

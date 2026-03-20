@@ -57,7 +57,7 @@ export function CollectionForm(props: Props) {
   }
 
   const labelCls =
-    "font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text-3 block mb-1.5";
+    "font-mono text-xs tracking-[0.08em] uppercase text-cms-text-3 block mb-1.5";
   const hintCls = "normal-case tracking-normal font-normal text-cms-text-3";
 
   return (
@@ -96,7 +96,7 @@ export function CollectionForm(props: Props) {
             className={inputCls(!!state?.errors?.name)}
           />
           {state?.errors?.name?.map((e) => (
-            <p key={e} className="font-mono text-[10px] text-cms-danger mt-1">
+            <p key={e} className="font-mono text-xs text-cms-danger mt-1">
               {e}
             </p>
           ))}
@@ -125,7 +125,7 @@ export function CollectionForm(props: Props) {
           Slug <span className={hintCls}>(used in API routes)</span>
         </label>
         <div className="flex items-center">
-          <span className="font-mono text-[11px] text-cms-text-3 bg-cms-surface-3 border border-r-0 border-cms-border px-2.5 py-1.5 rounded-l-cms whitespace-nowrap">
+          <span className="font-mono text-sm text-cms-text-3 bg-cms-surface-3 border border-r-0 border-cms-border px-2.5 py-1.5 rounded-l-cms whitespace-nowrap">
             /api/v1/
           </span>
           <input
@@ -142,7 +142,7 @@ export function CollectionForm(props: Props) {
           />
         </div>
         {state?.errors?.slug?.map((e) => (
-          <p key={e} className="font-mono text-[10px] text-cms-danger mt-1">
+          <p key={e} className="font-mono text-xs text-cms-danger mt-1">
             {e}
           </p>
         ))}
@@ -175,7 +175,7 @@ export function CollectionForm(props: Props) {
         <span className="font-mono text-xs text-cms-text-2">
           Single instance (page)
         </span>
-        <span className="font-mono text-[11px] text-cms-text-3">
+        <span className="font-mono text-sm text-cms-text-3">
           — only one entry allowed
         </span>
       </label>

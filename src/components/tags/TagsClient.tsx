@@ -17,12 +17,12 @@ function DeleteTagButton({
   const [confirming, setConfirming] = useState(false);
 
   const baseCls =
-    "px-2 py-0.5 rounded border font-mono text-[10px] cursor-pointer";
+    "px-2 py-0.5 rounded border font-mono text-xs cursor-pointer";
 
   if (confirming) {
     return (
       <div className="flex items-center gap-1.5">
-        <span className="font-mono text-[10px] text-cms-text-3">Remove?</span>
+        <span className="font-mono text-xs text-cms-text-3">Remove?</span>
         <button
           onClick={() =>
             startTransition(async () => {
@@ -101,7 +101,7 @@ export function TagsClient({
       ) : (
         <div className="flex flex-col gap-0.5 mb-8">
           <div
-            className="grid gap-3 px-3.5 py-1.5 font-mono text-[10px] tracking-[0.07em] uppercase text-cms-text-3"
+            className="grid gap-3 px-3.5 py-1.5 font-mono text-xs tracking-[0.07em] uppercase text-cms-text-3"
             style={{ gridTemplateColumns: "1fr 140px 80px" }}
           >
             <span>Name</span>
@@ -121,7 +121,7 @@ export function TagsClient({
                   {tag.name}
                 </span>
               </div>
-              <code className="font-mono text-[11px] text-cms-text-3">
+              <code className="font-mono text-sm text-cms-text-3">
                 {tag.slug}
               </code>
               <div className="flex justify-end">
@@ -139,7 +139,7 @@ export function TagsClient({
 
       {canEdit && (
         <div>
-          <p className="font-mono text-[10px] tracking-widest uppercase text-cms-text-3 mb-3">
+          <p className="font-mono text-xs tracking-widest uppercase text-cms-text-3 mb-3">
             New tag
           </p>
           <div className="rounded-cms-lg border border-cms-border bg-cms-surface p-5">
@@ -161,7 +161,7 @@ export function TagsClient({
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <label className="font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text-3 block">
+                  <label className="font-mono text-xs tracking-[0.08em] uppercase text-cms-text-3 block">
                     Name
                   </label>
                   <input
@@ -174,14 +174,14 @@ export function TagsClient({
                   {state?.errors?.name?.map((e) => (
                     <p
                       key={e}
-                      className="font-mono text-[10px] text-cms-danger"
+                      className="font-mono text-xs text-cms-danger"
                     >
                       {e}
                     </p>
                   ))}
                 </div>
                 <div className="space-y-1.5">
-                  <label className="font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text-3 block">
+                  <label className="font-mono text-xs tracking-[0.08em] uppercase text-cms-text-3 block">
                     Slug{" "}
                     <span className="text-cms-text-3 normal-case tracking-normal font-normal">
                       (optional)

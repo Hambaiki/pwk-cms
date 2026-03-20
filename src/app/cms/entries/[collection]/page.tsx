@@ -45,7 +45,7 @@ export default async function EntriesPage({ params }: Props) {
             <h1 className="text-lg font-medium text-cms-text leading-tight">
               {collection.name}
             </h1>
-            <code className="font-mono text-[11px] text-cms-text-3">
+            <code className="font-mono text-sm text-cms-text-3">
               /api/v1/{collection.slug}
             </code>
           </div>
@@ -63,7 +63,7 @@ export default async function EntriesPage({ params }: Props) {
         <div className="flex flex-col gap-0.5">
           {/* Column headers */}
           <div
-            className="grid gap-3 px-3.5 py-1.5 font-mono text-[10px] tracking-[0.07em] uppercase text-cms-text-3"
+            className="grid gap-3 px-3.5 py-1.5 font-mono text-xs tracking-[0.07em] uppercase text-cms-text-3"
             style={{ gridTemplateColumns: "1fr 100px 1fr 120px 60px" }}
           >
             <span>Slug</span>
@@ -84,7 +84,7 @@ export default async function EntriesPage({ params }: Props) {
               </code>
 
               <span
-                className={`font-mono text-[10px] px-1.5 py-0.5 rounded border w-fit ${statusStyle[entry.status]}`}
+                className={`font-mono text-xs px-1.5 py-0.5 rounded border w-fit ${statusStyle[entry.status]}`}
               >
                 {entry.status}
               </span>
@@ -94,19 +94,19 @@ export default async function EntriesPage({ params }: Props) {
                   entry.tags.map((tag) => (
                     <span
                       key={tag.id}
-                      className="font-mono text-[10px] px-1.5 py-0.5 rounded-full border border-[rgba(232,160,48,0.25)] bg-cms-accent-subtle text-cms-accent"
+                      className="font-mono text-xs px-1.5 py-0.5 rounded-full border border-[rgba(232,160,48,0.25)] bg-cms-accent-subtle text-cms-accent"
                     >
                       {tag.name}
                     </span>
                   ))
                 ) : (
-                  <span className="font-mono text-[10px] text-cms-text-3">
+                  <span className="font-mono text-xs text-cms-text-3">
                     —
                   </span>
                 )}
               </div>
 
-              <span className="font-mono text-[11px] text-cms-text-3">
+              <span className="font-mono text-sm text-cms-text-3">
                 {new Date(entry.updatedAt).toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",
@@ -117,7 +117,7 @@ export default async function EntriesPage({ params }: Props) {
               <div className="flex justify-end">
                 <Link
                   href={`/cms/editor/${entry.id}`}
-                  className="font-mono text-[11px] text-cms-accent px-2.5 py-1 rounded-cms border border-cms-accent-border bg-cms-accent-subtle hover:bg-cms-accent-dim transition-colors no-underline"
+                  className="font-mono text-sm text-cms-accent px-2.5 py-1 rounded-cms border border-cms-accent-border bg-cms-accent-subtle hover:bg-cms-accent-dim transition-colors no-underline"
                 >
                   Edit
                 </Link>

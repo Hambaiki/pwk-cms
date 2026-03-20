@@ -17,7 +17,7 @@ export function DeleteCollectionButton({
   const [confirming, setConfirming] = useState(false);
 
   const baseBtnCls =
-    "rounded-cms border px-3 py-1.5 font-mono text-[11px] cursor-pointer transition-all duration-200";
+    "rounded-cms border px-3 py-1.5 font-mono text-sm cursor-pointer transition-all duration-200";
 
   if (confirming) {
     return (

@@ -124,7 +124,7 @@ function CollectionNavItem({
           {col.name}
         </span>
         {col.isPage && (
-          <span className="font-mono text-[9px] px-1.5 py-px rounded bg-[rgba(130,90,220,0.15)] border border-[rgba(130,90,220,0.25)] text-[#a080e8] shrink-0">
+          <span className="font-mono text-xxs px-1.5 py-px rounded bg-[rgba(130,90,220,0.15)] border border-[rgba(130,90,220,0.25)] text-[#a080e8] shrink-0">
             page
           </span>
         )}
@@ -317,7 +317,7 @@ function NavLabel({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between px-4 pt-1.5 pb-1 font-mono text-[10px] font-medium tracking-[0.08em] uppercase text-cms-text3">
+    <div className="flex items-center justify-between px-4 pt-1.5 pb-1 font-mono text-xs font-medium tracking-[0.08em] uppercase text-cms-text3">
       {children}
       {action}
     </div>
@@ -383,7 +383,7 @@ export function NavLinks({ collections, session }: Props) {
         </NavLabel>
 
         {collections.length === 0 ? (
-          <p className="px-4 py-1 font-mono text-[11px] text-cms-text3 italic">
+          <p className="px-4 py-1 font-mono text-sm text-cms-text3 italic">
             No collections yet
           </p>
         ) : (

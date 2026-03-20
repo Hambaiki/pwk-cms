@@ -64,7 +64,7 @@ function blankField(sortOrder: number): DraftField {
 const inputCls =
   "w-full font-mono text-xs px-2.5 py-1.5 rounded-cms border border-cms-border bg-cms-surface-2 text-cms-text outline-none focus:border-[rgba(232,160,48,0.5)] transition-colors";
 const labelCls =
-  "font-mono text-[10px] tracking-[0.07em] uppercase text-cms-text-3 block mb-1";
+  "font-mono text-xs tracking-[0.07em] uppercase text-cms-text-3 block mb-1";
 
 // ─── FieldTypeOptions ──────────────────────────────────────────────────────────
 
@@ -116,7 +116,7 @@ function FieldTypeOptions({
         <button
           type="button"
           onClick={() => onChange({ options: { choices: [...choices, ""] } })}
-          className="font-mono text-[11px] text-cms-accent hover:opacity-80 transition-opacity"
+          className="font-mono text-sm text-cms-accent hover:opacity-80 transition-opacity"
         >
           + Add choice
         </button>
@@ -221,7 +221,7 @@ function FieldRow({
         </div>
 
         {/* Type badge */}
-        <span className="shrink-0 font-mono text-[10px] px-1.5 py-0.5 rounded border border-cms-border bg-cms-surface-2 text-cms-text-3">
+        <span className="shrink-0 font-mono text-xs px-1.5 py-0.5 rounded border border-cms-border bg-cms-surface-2 text-cms-text-3">
           {field.type}
         </span>
 
@@ -240,7 +240,7 @@ function FieldRow({
         />
 
         {field.required && (
-          <span className="shrink-0 font-mono text-[10px] text-cms-danger">
+          <span className="shrink-0 font-mono text-xs text-cms-danger">
             required
           </span>
         )}

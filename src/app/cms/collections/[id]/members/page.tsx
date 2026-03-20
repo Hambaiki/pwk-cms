@@ -38,7 +38,7 @@ export default async function MembersPage({ params }: Props) {
       {/* Breadcrumb back */}
       <Link
         href={`/cms/collections/${id}`}
-        className="inline-flex items-center gap-1.5 font-mono text-[11px] text-cms-text-3 hover:text-cms-text-2 transition-colors no-underline"
+        className="inline-flex items-center gap-1.5 font-mono text-sm text-cms-text-3 hover:text-cms-text-2 transition-colors no-underline"
       >
         <svg viewBox="0 0 14 14" fill="none" width="12" height="12">
           <path
@@ -58,7 +58,7 @@ export default async function MembersPage({ params }: Props) {
           <h1 className="text-lg font-medium text-cms-text">
             Members & API keys
           </h1>
-          <p className="font-mono text-[11px] text-cms-text-3">
+          <p className="font-mono text-sm text-cms-text-3">
             Manage who has access and how the API is authenticated
           </p>
         </div>
@@ -66,7 +66,7 @@ export default async function MembersPage({ params }: Props) {
 
       {/* Members */}
       <section>
-        <h2 className="font-mono text-[10px] tracking-widest uppercase text-cms-text-3 mb-4">
+        <h2 className="font-mono text-xs tracking-widest uppercase text-cms-text-3 mb-4">
           Members
         </h2>
         <MembersClient collectionId={collection.id} initialMembers={members} />
@@ -74,12 +74,12 @@ export default async function MembersPage({ params }: Props) {
 
       {/* API Keys */}
       <section>
-        <h2 className="font-mono text-[10px] tracking-widest uppercase text-cms-text-3 mb-4">
+        <h2 className="font-mono text-xs tracking-widest uppercase text-cms-text-3 mb-4">
           API keys
         </h2>
         <div className="space-y-6">
           <div className="rounded-cms-lg border border-cms-border bg-cms-surface p-4">
-            <p className="font-mono text-[11px] text-cms-text-3 leading-relaxed">
+            <p className="font-mono text-sm text-cms-text-3 leading-relaxed">
               <span className="text-cms-accent">Public keys</span> — safe for
               frontend code, read published content only.{" "}
               <span className="text-[#7F77DD]">Private keys</span> — full
@@ -88,7 +88,7 @@ export default async function MembersPage({ params }: Props) {
           </div>
           <ApiKeyList keys={keys} />
           <div className="rounded-cms-lg border border-cms-border bg-cms-surface p-5">
-            <p className="font-mono text-[10px] tracking-widest uppercase text-cms-text-3 mb-4">
+            <p className="font-mono text-xs tracking-widest uppercase text-cms-text-3 mb-4">
               Generate new key
             </p>
             <CreateKeyForm collectionId={collection.id} />

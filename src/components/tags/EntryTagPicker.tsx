@@ -43,7 +43,7 @@ export function EntryTagPicker({ entryId, initialTags, allTags }: Props) {
 
   return (
     <div>
-      <p className="font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text-3 mb-2">
+      <p className="font-mono text-xs tracking-[0.08em] uppercase text-cms-text-3 mb-2">
         Tags
       </p>
 
@@ -53,7 +53,7 @@ export function EntryTagPicker({ entryId, initialTags, allTags }: Props) {
             <button
               key={tag.id}
               onClick={() => toggle(tag.id)}
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-[rgba(232,160,48,0.3)] bg-[rgba(232,160,48,0.08)] text-cms-accent font-mono text-[10px] cursor-pointer hover:bg-[rgba(232,160,48,0.15)] transition-colors"
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-[rgba(232,160,48,0.3)] bg-[rgba(232,160,48,0.08)] text-cms-accent font-mono text-xs cursor-pointer hover:bg-[rgba(232,160,48,0.15)] transition-colors"
             >
               {tag.name}
               <svg
@@ -81,11 +81,11 @@ export function EntryTagPicker({ entryId, initialTags, allTags }: Props) {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search tags…"
-            className="w-full font-mono text-[11px] px-2.5 py-1.5 bg-transparent text-cms-text outline-none border-b border-cms-border placeholder:text-cms-text-3"
+            className="w-full font-mono text-sm px-2.5 py-1.5 bg-transparent text-cms-text outline-none border-b border-cms-border placeholder:text-cms-text-3"
           />
           <div className="max-h-36 overflow-y-auto">
             {filtered.length === 0 ? (
-              <p className="font-mono text-[10px] text-cms-text-3 px-2.5 py-2">
+              <p className="font-mono text-xs text-cms-text-3 px-2.5 py-2">
                 No tags match.
               </p>
             ) : (
@@ -122,7 +122,7 @@ export function EntryTagPicker({ entryId, initialTags, allTags }: Props) {
                         </svg>
                       )}
                     </span>
-                    <span className="font-mono text-[11px] text-cms-text">
+                    <span className="font-mono text-sm text-cms-text">
                       {tag.name}
                     </span>
                   </button>
@@ -132,7 +132,7 @@ export function EntryTagPicker({ entryId, initialTags, allTags }: Props) {
           </div>
         </div>
       ) : (
-        <p className="font-mono text-[10px] text-cms-text-3">
+        <p className="font-mono text-xs text-cms-text-3">
           No tags yet.{" "}
           <a
             href="/cms/tags"
@@ -149,7 +149,7 @@ export function EntryTagPicker({ entryId, initialTags, allTags }: Props) {
           onClick={handleSave}
           disabled={saving}
           className={cn(
-            "mt-2 w-full py-1 rounded-cms border border-cms-border bg-transparent font-mono text-[10px]",
+            "mt-2 w-full py-1 rounded-cms border border-cms-border bg-transparent font-mono text-xs",
             "cursor-pointer hover:border-cms-accent hover:text-cms-accent transition-colors disabled:opacity-60",
             saved
               ? "text-[#50c878] border-[rgba(40,160,90,0.3)]"

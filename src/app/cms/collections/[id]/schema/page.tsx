@@ -29,7 +29,7 @@ export default async function SchemaPage({ params }: Props) {
       {/* Breadcrumb back */}
       <Link
         href={`/cms/collections/${id}`}
-        className="inline-flex items-center gap-1.5 font-mono text-[11px] text-cms-text-3 hover:text-cms-text-2 transition-colors no-underline mb-6"
+        className="inline-flex items-center gap-1.5 font-mono text-sm text-cms-text-3 hover:text-cms-text-2 transition-colors no-underline mb-6"
       >
         <svg viewBox="0 0 14 14" fill="none" width="12" height="12">
           <path
@@ -47,7 +47,7 @@ export default async function SchemaPage({ params }: Props) {
         <span className="text-2xl">{collection.icon ?? "📄"}</span>
         <div>
           <h1 className="text-lg font-medium text-cms-text">Schema</h1>
-          <p className="font-mono text-[11px] text-cms-text-3">
+          <p className="font-mono text-sm text-cms-text-3">
             Define the fields for {collection.name}
           </p>
         </div>
@@ -64,7 +64,7 @@ export default async function SchemaPage({ params }: Props) {
           ) : (
             <div className="flex flex-col gap-0.5">
               <div
-                className="grid gap-3 px-3.5 py-1.5 font-mono text-[10px] tracking-[0.07em] uppercase text-cms-text-3"
+                className="grid gap-3 px-3.5 py-1.5 font-mono text-xs tracking-[0.07em] uppercase text-cms-text-3"
                 style={{ gridTemplateColumns: "1fr 100px 60px 60px" }}
               >
                 <span>Name</span>
@@ -82,20 +82,20 @@ export default async function SchemaPage({ params }: Props) {
                     <span className="font-mono text-xs text-cms-text">
                       {f.name}
                     </span>
-                    <code className="font-mono text-[10px] text-cms-text-3 ml-2">
+                    <code className="font-mono text-xs text-cms-text-3 ml-2">
                       {f.slug}
                     </code>
                   </div>
-                  <span className="font-mono text-[11px] text-cms-text-3">
+                  <span className="font-mono text-sm text-cms-text-3">
                     {f.type}
                   </span>
                   <span
-                    className={`font-mono text-[10px] ${f.required ? "text-cms-danger" : "text-cms-text-3"}`}
+                    className={`font-mono text-xs ${f.required ? "text-cms-danger" : "text-cms-text-3"}`}
                   >
                     {f.required ? "yes" : "—"}
                   </span>
                   <span
-                    className={`font-mono text-[10px] ${f.multiple ? "text-cms-accent" : "text-cms-text-3"}`}
+                    className={`font-mono text-xs ${f.multiple ? "text-cms-accent" : "text-cms-text-3"}`}
                   >
                     {f.multiple ? "yes" : "—"}
                   </span>

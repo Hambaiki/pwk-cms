@@ -8,7 +8,7 @@ export default function NewCollectionPage() {
     <div className="p-8 mx-auto">
       <div className="mb-8">
         <h1 className="text-lg font-medium text-cms-text">New collection</h1>
-        <p className="font-mono text-[11px] text-cms-text-3 mt-1">
+        <p className="font-mono text-sm text-cms-text-3 mt-1">
           Give your content type a name and we'll set up the rest.
         </p>
       </div>

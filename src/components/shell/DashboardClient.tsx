@@ -74,7 +74,7 @@ export function DashboardClient({
             <div className="font-mono text-2xl font-medium text-cms-accent leading-none">
               {value}
             </div>
-            <div className="font-mono text-[10px] tracking-widest uppercase text-cms-text3 mt-1.5">
+            <div className="font-mono text-xs tracking-widest uppercase text-cms-text3 mt-1.5">
               {label}
             </div>
           </Link>
@@ -84,7 +84,7 @@ export function DashboardClient({
       {/* Collections list */}
       {collections.length > 0 ? (
         <div className="mt-10">
-          <p className="font-mono text-[10px] tracking-widest uppercase text-cms-text3 mb-3">
+          <p className="font-mono text-xs tracking-widest uppercase text-cms-text3 mb-3">
             Collections
           </p>
           <div className="flex flex-col gap-1">
@@ -100,12 +100,12 @@ export function DashboardClient({
                 <span className="flex-1 text-sm text-cms-text truncate">
                   {col.name}
                 </span>
-                <code className="font-mono text-[11px] text-cms-text3 hidden sm:block">
+                <code className="font-mono text-sm text-cms-text3 hidden sm:block">
                   /api/v1/{col.slug}
                 </code>
                 <span
                   className={cn(
-                    "font-mono text-[10px] px-1.5 py-0.5 rounded border shrink-0",
+                    "font-mono text-xs px-1.5 py-0.5 rounded border shrink-0",
                     roleStyle[col.role],
                   )}
                 >

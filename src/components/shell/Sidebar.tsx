@@ -61,7 +61,7 @@ export async function Sidebar() {
             />
           </svg>
         </div>
-        <span className="font-mono text-[13px] font-medium text-cms-text tracking-tight">
+        <span className="font-mono text-base font-medium text-cms-text tracking-tight">
           pwk<span className="text-cms-accent">cms</span>
         </span>
       </div>
@@ -73,13 +73,13 @@ export async function Sidebar() {
       {session && (
         <div className="flex items-center gap-2.5 px-3.5 py-3 border-t border-cms-border shrink-0">
           <div
-            className="w-6.5 h-6.5 rounded-md bg-cms-accent-dim border border-cms-accent-border text-cms-accent font-mono text-[11px] font-medium flex items-center justify-center shrink-0"
+            className="w-6.5 h-6.5 rounded-md bg-cms-accent-dim border border-cms-accent-border text-cms-accent font-mono text-sm font-medium flex items-center justify-center shrink-0"
             aria-hidden="true"
           >
             {(session.email?.[0] ?? "?").toUpperCase()}
           </div>
           <div className="min-w-0">
-            <span className="font-mono text-[11px] text-cms-text-3 overflow-hidden text-ellipsis whitespace-nowrap block">
+            <span className="font-mono text-sm text-cms-text-3 overflow-hidden text-ellipsis whitespace-nowrap block">
               {session.email}
             </span>
           </div>

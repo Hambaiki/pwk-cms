@@ -117,7 +117,7 @@ export function EntryEditor({
 
           <div className="ml-auto flex items-center gap-2">
             {lastSaved && !savePending && (
-              <span className="font-mono text-[10px] text-cms-text3">
+              <span className="font-mono text-xs text-cms-text3">
                 saved{" "}
                 {lastSaved.toLocaleTimeString("en-US", {
                   hour: "2-digit",
@@ -126,14 +126,14 @@ export function EntryEditor({
               </span>
             )}
             {savePending && (
-              <span className="font-mono text-[10px] text-cms-text3">
+              <span className="font-mono text-xs text-cms-text3">
                 saving…
               </span>
             )}
             <button
               onClick={triggerSave}
               disabled={savePending}
-              className="px-3 py-1 rounded-cms border border-cms-border2 bg-transparent text-cms-text2 font-mono text-[11px] cursor-pointer disabled:opacity-60 hover:border-cms-accent transition-colors"
+              className="px-3 py-1 rounded-cms border border-cms-border2 bg-transparent text-cms-text2 font-mono text-sm cursor-pointer disabled:opacity-60 hover:border-cms-accent transition-colors"
             >
               Save
             </button>
@@ -163,11 +163,11 @@ export function EntryEditor({
       <aside className="w-60 shrink-0 border-l border-cms-border bg-cms-surface flex flex-col overflow-auto">
         {/* Status + publish */}
         <div className="p-4 border-b border-cms-border">
-          <p className="font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text3 mb-2">
+          <p className="font-mono text-xs tracking-[0.08em] uppercase text-cms-text3 mb-2">
             Status
           </p>
           <span
-            className={`inline-block font-mono text-[11px] px-2 py-0.5 rounded border mb-3 ${badge.cls}`}
+            className={`inline-block font-mono text-sm px-2 py-0.5 rounded border mb-3 ${badge.cls}`}
           >
             {badge.label}
           </span>
@@ -180,7 +180,7 @@ export function EntryEditor({
                 })
               }
               disabled={publishPending}
-              className="block w-full py-1.5 rounded-cms bg-cms-accent text-cms-accent-text font-mono text-[11px] font-medium border-none cursor-pointer disabled:opacity-60"
+              className="block w-full py-1.5 rounded-cms bg-cms-accent text-cms-accent-text font-mono text-sm font-medium border-none cursor-pointer disabled:opacity-60"
             >
               {publishPending ? "Publishing…" : "Publish"}
             </button>
@@ -193,7 +193,7 @@ export function EntryEditor({
                 })
               }
               disabled={publishPending}
-              className="block w-full py-1.5 rounded-cms border border-cms-border2 bg-transparent text-cms-text2 font-mono text-[11px] cursor-pointer disabled:opacity-60 hover:border-cms-accent transition-colors"
+              className="block w-full py-1.5 rounded-cms border border-cms-border2 bg-transparent text-cms-text2 font-mono text-sm cursor-pointer disabled:opacity-60 hover:border-cms-accent transition-colors"
             >
               {publishPending ? "Unpublishing…" : "Unpublish"}
             </button>
@@ -215,7 +215,7 @@ export function EntryEditor({
           />
 
           <div>
-            <label className="font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text3 block mb-1.5">
+            <label className="font-mono text-xs tracking-[0.08em] uppercase text-cms-text3 block mb-1.5">
               Slug
             </label>
             <input
@@ -225,7 +225,7 @@ export function EntryEditor({
               className={`${inputCls} ${saveState?.errors?.slug ? "border-[rgba(224,80,80,0.5)]" : ""}`}
             />
             {saveState?.errors?.slug?.map((e) => (
-              <p key={e} className="font-mono text-[10px] text-cms-danger mt-1">
+              <p key={e} className="font-mono text-xs text-cms-danger mt-1">
                 {e}
               </p>
             ))}
@@ -236,14 +236,14 @@ export function EntryEditor({
             .map((field) => (
               <div key={field.id}>
                 <div className="flex items-center gap-1.5 mb-1.5">
-                  <label className="font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text3">
+                  <label className="font-mono text-xs tracking-[0.08em] uppercase text-cms-text3">
                     {field.name}
                     {field.required && (
                       <span className="text-cms-danger ml-0.5">*</span>
                     )}
                   </label>
                   {field.type === "media" && (
-                    <span className="font-mono text-[9px] px-1 py-px rounded border border-cms-border text-cms-text-3 bg-cms-surface-2">
+                    <span className="font-mono text-xxs px-1 py-px rounded border border-cms-border text-cms-text-3 bg-cms-surface-2">
                       media
                     </span>
                   )}
@@ -270,10 +270,10 @@ export function EntryEditor({
         {/* Published at */}
         {entry.publishedAt && (
           <div className="px-4 py-3 border-b border-cms-border">
-            <p className="font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text3 mb-1">
+            <p className="font-mono text-xs tracking-[0.08em] uppercase text-cms-text3 mb-1">
               Published
             </p>
-            <p className="font-mono text-[11px] text-cms-text2">
+            <p className="font-mono text-sm text-cms-text2">
               {new Date(entry.publishedAt).toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
@@ -288,13 +288,13 @@ export function EntryEditor({
           {!confirmDelete ? (
             <button
               onClick={() => setConfirmDelete(true)}
-              className="w-full py-1.5 rounded-cms border border-cms-border bg-transparent text-cms-text3 font-mono text-[11px] cursor-pointer hover:text-cms-danger hover:border-cms-danger-subtle transition-colors"
+              className="w-full py-1.5 rounded-cms border border-cms-border bg-transparent text-cms-text3 font-mono text-sm cursor-pointer hover:text-cms-danger hover:border-cms-danger-subtle transition-colors"
             >
               Delete entry
             </button>
           ) : (
             <div className="flex flex-col gap-1.5">
-              <p className="font-mono text-[11px] text-cms-text2 text-center">
+              <p className="font-mono text-sm text-cms-text2 text-center">
                 Are you sure?
               </p>
               <button
@@ -302,13 +302,13 @@ export function EntryEditor({
                   startDelete(() => deleteEntry(entry.id, collection.slug))
                 }
                 disabled={deletePending}
-                className="py-1.5 rounded-cms border border-cms-danger-subtle bg-cms-danger-dim text-cms-danger font-mono text-[11px] cursor-pointer disabled:opacity-60"
+                className="py-1.5 rounded-cms border border-cms-danger-subtle bg-cms-danger-dim text-cms-danger font-mono text-sm cursor-pointer disabled:opacity-60"
               >
                 {deletePending ? "Deleting…" : "Yes, delete"}
               </button>
               <button
                 onClick={() => setConfirmDelete(false)}
-                className="py-1.5 rounded-cms border border-cms-border bg-transparent text-cms-text3 font-mono text-[11px] cursor-pointer hover:border-cms-border2 transition-colors"
+                className="py-1.5 rounded-cms border border-cms-border bg-transparent text-cms-text3 font-mono text-sm cursor-pointer hover:border-cms-border2 transition-colors"
               >
                 Cancel
               </button>
@@ -453,7 +453,7 @@ function MediaFieldInput({
                     strokeLinecap="round"
                   />
                 </svg>
-                <span className="font-mono text-[10px] text-cms-text-3 px-2 text-center truncate w-full">
+                <span className="font-mono text-xs text-cms-text-3 px-2 text-center truncate w-full">
                   {url.split("/").pop()?.split("?")[0]}
                 </span>
               </div>
@@ -464,7 +464,7 @@ function MediaFieldInput({
             <button
               type="button"
               onClick={() => setPickerOpen(true)}
-              className="flex-1 inline-flex items-center gap-1.5 font-mono text-[11px] text-cms-text-2 hover:text-cms-text transition-colors cursor-pointer"
+              className="flex-1 inline-flex items-center gap-1.5 font-mono text-sm text-cms-text-2 hover:text-cms-text transition-colors cursor-pointer"
             >
               <svg viewBox="0 0 14 14" fill="none" width="12" height="12">
                 <rect
@@ -496,7 +496,7 @@ function MediaFieldInput({
             <button
               type="button"
               onClick={() => setUrl("")}
-              className="font-mono text-[11px] text-cms-text-3 hover:text-cms-danger transition-colors cursor-pointer"
+              className="font-mono text-sm text-cms-text-3 hover:text-cms-danger transition-colors cursor-pointer"
               aria-label="Remove file"
             >
               Remove
@@ -538,10 +538,10 @@ function MediaFieldInput({
             </svg>
           </div>
           <div className="text-left">
-            <p className="font-mono text-[11px] text-cms-text-2 group-hover:text-cms-text transition-colors">
+            <p className="font-mono text-sm text-cms-text-2 group-hover:text-cms-text transition-colors">
               Choose file
             </p>
-            <p className="font-mono text-[10px] text-cms-text-3">
+            <p className="font-mono text-xs text-cms-text-3">
               Browse media library
             </p>
           </div>

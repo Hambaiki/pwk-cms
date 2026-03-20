@@ -39,6 +39,15 @@
   --font-cms-mono: "IBM Plex Mono", monospace;
   --font-cms-serif: "Instrument Serif", serif;
 
+  /* Text sizes */
+  --text-xxs: 10px;
+  /* --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-md: 15px;
+  --text-lg: 16px;
+  --text-xl: 18px; */
+
   /* Border radius */
   --radius-cms: 8px;
   --radius-cms-lg: 10px;

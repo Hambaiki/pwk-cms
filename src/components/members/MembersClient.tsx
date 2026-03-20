@@ -43,7 +43,7 @@ function MemberRow({
             {member.displayName}
           </p>
         )}
-        <p className="font-mono text-[11px] text-cms-text-3 truncate">
+        <p className="font-mono text-sm text-cms-text-3 truncate">
           {member.email}
         </p>
       </div>
@@ -52,7 +52,7 @@ function MemberRow({
         {isOwner ? (
           <span
             className={cn(
-              "font-mono text-[10px] px-1.5 py-0.5 rounded border",
+              "font-mono text-xs px-1.5 py-0.5 rounded border",
               roleBadge.owner,
             )}
           >
@@ -69,7 +69,7 @@ function MemberRow({
                 onRoleChange(member.id, role);
               });
             }}
-            className="font-mono text-[11px] px-2 py-0.5 rounded-cms border border-cms-border bg-cms-surface-2 text-cms-text-2 outline-none cursor-pointer disabled:opacity-60"
+            className="font-mono text-sm px-2 py-0.5 rounded-cms border border-cms-border bg-cms-surface-2 text-cms-text-2 outline-none cursor-pointer disabled:opacity-60"
           >
             <option value="editor">editor</option>
             <option value="viewer">viewer</option>
@@ -87,7 +87,7 @@ function MemberRow({
               })
             }
             disabled={removing}
-            className="font-mono text-[11px] text-cms-text-3 hover:text-cms-danger transition-colors disabled:opacity-60 cursor-pointer"
+            className="font-mono text-sm text-cms-text-3 hover:text-cms-danger transition-colors disabled:opacity-60 cursor-pointer"
           >
             {removing ? "…" : "Remove"}
           </button>
@@ -128,7 +128,7 @@ export function MembersClient({
       {/* Member list */}
       <div className="flex flex-col gap-0.5">
         <div
-          className="grid gap-3 px-3.5 py-1.5 font-mono text-[10px] tracking-[0.07em] uppercase text-cms-text-3"
+          className="grid gap-3 px-3.5 py-1.5 font-mono text-xs tracking-[0.07em] uppercase text-cms-text-3"
           style={{ gridTemplateColumns: "1fr 120px 80px" }}
         >
           <span>User</span>
@@ -147,7 +147,7 @@ export function MembersClient({
 
       {/* Add member */}
       <div className="rounded-cms-lg border border-cms-border bg-cms-surface p-5">
-        <p className="font-mono text-[10px] tracking-widest uppercase text-cms-text-3 mb-4">
+        <p className="font-mono text-xs tracking-widest uppercase text-cms-text-3 mb-4">
           Add member
         </p>
         <form action={formAction} className="space-y-3">
@@ -169,7 +169,7 @@ export function MembersClient({
 
           <div className="grid grid-cols-[1fr_120px] gap-3 items-end">
             <div className="space-y-1.5">
-              <label className="font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text-3 block">
+              <label className="font-mono text-xs tracking-[0.08em] uppercase text-cms-text-3 block">
                 Email
               </label>
               <input
@@ -183,13 +183,13 @@ export function MembersClient({
                 )}
               />
               {state?.errors?.email?.map((e) => (
-                <p key={e} className="font-mono text-[10px] text-cms-danger">
+                <p key={e} className="font-mono text-xs text-cms-danger">
                   {e}
                 </p>
               ))}
             </div>
             <div className="space-y-1.5">
-              <label className="font-mono text-[10px] tracking-[0.08em] uppercase text-cms-text-3 block">
+              <label className="font-mono text-xs tracking-[0.08em] uppercase text-cms-text-3 block">
                 Role
               </label>
               <select
@@ -203,7 +203,7 @@ export function MembersClient({
             </div>
           </div>
 
-          <p className="font-mono text-[10px] text-cms-text-3">
+          <p className="font-mono text-xs text-cms-text-3">
             The person must already have a pwk-cms account.
           </p>
 

@@ -92,7 +92,7 @@ export function MediaPicker({
               <p className="font-mono text-xs text-cms-text-3">
                 No files found.
               </p>
-              <p className="font-mono text-[11px] text-cms-text-3">
+              <p className="font-mono text-sm text-cms-text-3">
                 Upload files in the Media library for this collection first.
               </p>
             </div>
@@ -118,16 +118,16 @@ export function MediaPicker({
                         loading="lazy"
                       />
                     ) : (
-                      <span className="font-mono text-[11px] text-cms-text-3">
+                      <span className="font-mono text-sm text-cms-text-3">
                         {item.filename.split(".").pop()?.toUpperCase()}
                       </span>
                     )}
                   </div>
                   <div className="px-2 py-1.5">
-                    <p className="font-mono text-[10px] text-cms-text-2 overflow-hidden text-ellipsis whitespace-nowrap">
+                    <p className="font-mono text-xs text-cms-text-2 overflow-hidden text-ellipsis whitespace-nowrap">
                       {item.filename}
                     </p>
-                    <p className="font-mono text-[10px] text-cms-text-3">
+                    <p className="font-mono text-xs text-cms-text-3">
                       {fmtSize(item.size)}
                     </p>
                   </div>
