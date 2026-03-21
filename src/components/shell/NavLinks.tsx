@@ -14,7 +14,7 @@ import type { Collection, MemberRole } from "@/lib/db/schema";
 
 const navItemBase =
   "flex items-center gap-2 px-4 py-1.5 text-[12.5px] text-cms-text2 no-underline transition-colors duration-100 cursor-pointer border-none bg-none w-full text-left relative";
-const navItemHover = "hover:text-cms-text hover:bg-white/[0.04]";
+const navItemHover = "hover:text-cms-text hover:bg-white/4";
 const navItemActive =
   "text-cms-text bg-cms-accent-dim before:absolute before:left-0 before:top-1 before:bottom-1 before:w-0.5 before:bg-cms-accent before:rounded-r";
 

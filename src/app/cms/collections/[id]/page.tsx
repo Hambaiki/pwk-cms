@@ -9,8 +9,7 @@ import { DeleteCollectionButton } from "@/components/collections/DeleteCollectio
 import { CollectionForm } from "@/components/collections/CollectionForm";
 import { NewEntryButton } from "@/components/editor/NewEntryButton";
 import { EditPageButton } from "@/components/editor/EditPageButton";
-import { cn } from "@/lib/utils";
-import type { Collection, MemberRole } from "@/lib/db/schema";
+import { RoleBadge } from "@/components/members/RoleBadge";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -21,15 +20,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: result ? `${result.collection.name} — pwk-cms` : "Not found",
   };
 }
-
-const roleStyle: Record<MemberRole, string> = {
-  owner:
-    "bg-[rgba(232,160,48,0.08)] border-[rgba(232,160,48,0.25)] text-cms-accent",
-  editor:
-    "bg-[rgba(29,158,117,0.08)] border-[rgba(29,158,117,0.25)] text-[#1D9E75]",
-  viewer:
-    "bg-[rgba(90,88,85,0.15)] border-[rgba(90,88,85,0.3)] text-cms-text-3",
-};
 
 function SubPageCard({
   href,
@@ -97,14 +87,7 @@ export default async function CollectionOverviewPage({ params }: Props) {
               <h1 className="text-lg font-medium text-cms-text leading-tight">
                 {collection.name}
               </h1>
-              <span
-                className={cn(
-                  "font-mono text-xs px-1.5 py-0.5 rounded border",
-                  roleStyle[role],
-                )}
-              >
-                {role}
-              </span>
+              <RoleBadge variant={role} />
               {collection.isPage && (
                 <span className="font-mono text-xxs px-1.5 py-px rounded bg-[rgba(130,90,220,0.15)] border border-[rgba(130,90,220,0.25)] text-[#a080e8]">
                   page

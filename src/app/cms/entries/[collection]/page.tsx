@@ -6,6 +6,7 @@ import {
   getOrCreatePageEntry,
 } from "@/lib/actions/entries";
 import { NewEntryButton } from "@/components/editor/NewEntryButton";
+import { StatusBadge } from "@/components/entry/StatusBadge";
 
 type Props = { params: Promise<{ collection: string }> };
 
@@ -13,14 +14,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { collection: collectionSlug } = await params;
   return { title: `${collectionSlug} — pwk-cms` };
 }
-
-const statusStyle = {
-  draft: "bg-[rgba(90,88,85,0.15)] border-[rgba(90,88,85,0.3)] text-cms-text-3",
-  published:
-    "bg-[rgba(40,160,90,0.1)] border-[rgba(40,160,90,0.25)] text-[#50c878]",
-  archived:
-    "bg-[rgba(224,80,80,0.08)] border-cms-danger-border text-cms-danger",
-} as const;
 
 export default async function EntriesPage({ params }: Props) {
   const { collection: collectionSlug } = await params;
@@ -83,11 +76,7 @@ export default async function EntriesPage({ params }: Props) {
                 {entry.slug}
               </code>
 
-              <span
-                className={`font-mono text-xs px-1.5 py-0.5 rounded border w-fit ${statusStyle[entry.status]}`}
-              >
-                {entry.status}
-              </span>
+              <StatusBadge variant={entry.status} />
 
               <div className="flex flex-wrap gap-1 min-w-0">
                 {entry.tags.length > 0 ? (
@@ -100,9 +89,7 @@ export default async function EntriesPage({ params }: Props) {
                     </span>
                   ))
                 ) : (
-                  <span className="font-mono text-xs text-cms-text-3">
-                    —
-                  </span>
+                  <span className="font-mono text-xs text-cms-text-3">—</span>
                 )}
               </div>
 

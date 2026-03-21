@@ -4,6 +4,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import type { Collection, Profile, MemberRole } from "@/lib/db/schema";
 import type { DashboardStats } from "@/lib/actions/collections";
+import { RoleBadge } from "@/components/members/RoleBadge";
 
 type CollectionWithRole = Collection & { role: MemberRole };
 
@@ -13,14 +14,6 @@ type Props = {
   stats: DashboardStats;
   greeting: string;
   today: string;
-};
-
-const roleStyle: Record<MemberRole, string> = {
-  owner:
-    "bg-[rgba(232,160,48,0.08)] border-[rgba(232,160,48,0.25)] text-cms-accent",
-  editor:
-    "bg-[rgba(29,158,117,0.08)] border-[rgba(29,158,117,0.25)] text-[#1D9E75]",
-  viewer: "bg-[rgba(90,88,85,0.15)] border-[rgba(90,88,85,0.3)] text-cms-text3",
 };
 
 export function DashboardClient({
@@ -103,14 +96,7 @@ export function DashboardClient({
                 <code className="font-mono text-sm text-cms-text3 hidden sm:block">
                   /api/v1/{col.slug}
                 </code>
-                <span
-                  className={cn(
-                    "font-mono text-xs px-1.5 py-0.5 rounded border shrink-0",
-                    roleStyle[col.role],
-                  )}
-                >
-                  {col.role}
-                </span>
+                <RoleBadge variant={col.role} />
               </Link>
             ))}
           </div>
