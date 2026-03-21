@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getCollectionById } from "@/lib/actions/collections";
 import { SchemaBuilder } from "@/components/collections/SchemaBuilder";
+import { cn } from "@/lib/utils";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -90,12 +91,18 @@ export default async function SchemaPage({ params }: Props) {
                     {f.type}
                   </span>
                   <span
-                    className={`font-mono text-xs ${f.required ? "text-cms-danger" : "text-cms-text-3"}`}
+                    className={cn(
+                      `font-mono text-xs`,
+                      f.required ? "text-cms-danger" : "text-cms-text-3",
+                    )}
                   >
                     {f.required ? "yes" : "—"}
                   </span>
                   <span
-                    className={`font-mono text-xs ${f.multiple ? "text-cms-accent" : "text-cms-text-3"}`}
+                    className={cn(
+                      `font-mono text-xs`,
+                      f.multiple ? "text-cms-accent" : "text-cms-text-3",
+                    )}
                   >
                     {f.multiple ? "yes" : "—"}
                   </span>

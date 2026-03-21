@@ -13,7 +13,7 @@ import type { Collection, MemberRole } from "@/lib/db/schema";
 // ─── Shared class strings ──────────────────────────────────────────────────────
 
 const navItemBase =
-  "flex items-center gap-2 px-4 py-1.5 text-[12.5px] text-cms-text2 no-underline transition-colors duration-100 cursor-pointer border-none bg-none w-full text-left relative";
+  "flex items-center gap-2 px-4 py-1.5 text-[12.5px] text-cms-text-2 no-underline transition-colors duration-100 cursor-pointer border-none bg-none w-full text-left relative";
 const navItemHover = "hover:text-cms-text hover:bg-white/4";
 const navItemActive =
   "text-cms-text bg-cms-accent-dim before:absolute before:left-0 before:top-1 before:bottom-1 before:w-0.5 before:bg-cms-accent before:rounded-r";
@@ -317,7 +317,7 @@ function NavLabel({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between px-4 pt-1.5 pb-1 font-mono text-xs font-medium tracking-[0.08em] uppercase text-cms-text3">
+    <div className="flex items-center justify-between px-4 pt-1.5 pb-1 font-mono text-xs font-medium tracking-[0.08em] uppercase text-cms-text-3">
       {children}
       {action}
     </div>
@@ -359,7 +359,7 @@ export function NavLinks({ collections, session }: Props) {
           action={
             <Link
               href="/cms/collections/new"
-              className="text-cms-text3 hover:text-cms-accent transition-colors"
+              className="text-cms-text-3 hover:text-cms-accent transition-colors"
               aria-label="New collection"
             >
               <svg
@@ -383,7 +383,7 @@ export function NavLinks({ collections, session }: Props) {
         </NavLabel>
 
         {collections.length === 0 ? (
-          <p className="px-4 py-1 font-mono text-sm text-cms-text3 italic">
+          <p className="px-4 py-1 font-mono text-sm text-cms-text-3 italic">
             No collections yet
           </p>
         ) : (
@@ -423,7 +423,7 @@ export function NavLinks({ collections, session }: Props) {
             className={cn(
               navItemBase,
               navItemHover,
-              "text-cms-text3 hover:text-cms-danger hover:bg-cms-danger-dim disabled:opacity-60",
+              "text-cms-text-3 hover:text-cms-danger hover:bg-cms-danger-dim disabled:opacity-60",
             )}
           >
             <svg

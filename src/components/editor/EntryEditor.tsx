@@ -25,7 +25,7 @@ import { MediaPicker } from "@/components/media/MediaPicker";
 const BlockNoteEditorComponent = dynamic(() => import("./BlockNoteEditor"), {
   ssr: false,
   loading: () => (
-    <div className="px-16 py-12 font-mono text-xs text-cms-text3">
+    <div className="px-16 py-12 font-mono text-xs text-cms-text-3">
       Loading editor…
     </div>
   ),
@@ -42,7 +42,7 @@ type Props = {
 const statusBadge = {
   draft: {
     label: "draft",
-    cls: "bg-[rgba(90,88,85,0.15)] border-[rgba(90,88,85,0.3)] text-cms-text3",
+    cls: "bg-[rgba(90,88,85,0.15)] border-[rgba(90,88,85,0.3)] text-cms-text-3",
   },
   published: {
     label: "published",
@@ -100,7 +100,7 @@ export function EntryEditor({
 
   const badge = statusBadge[status];
   const inputCls =
-    "w-full font-mono text-xs px-2.5 py-1.5 rounded-cms border border-cms-border bg-cms-surface2 text-cms-text outline-none focus:border-[rgba(232,160,48,0.5)] transition-colors";
+    "w-full font-mono text-xs px-2.5 py-1.5 rounded-cms border border-cms-border bg-cms-surface-2 text-cms-text outline-none focus:border-[rgba(232,160,48,0.5)] transition-colors";
 
   return (
     <div className="flex h-full overflow-hidden">
@@ -109,15 +109,15 @@ export function EntryEditor({
         {/* Editor topbar */}
         <div className="flex items-center gap-3 px-6 h-12 border-b border-cms-border shrink-0 bg-cms-surface">
           <span className="text-sm">{collection.icon ?? "📄"}</span>
-          <span className="font-mono text-xs text-cms-text3">
+          <span className="font-mono text-xs text-cms-text-3">
             {collection.name}
           </span>
-          <span className="text-cms-border2 text-xs">/</span>
-          <code className="font-mono text-xs text-cms-text2">{slug}</code>
+          <span className="text-cms-border-2 text-xs">/</span>
+          <code className="font-mono text-xs text-cms-text-2">{slug}</code>
 
           <div className="ml-auto flex items-center gap-2">
             {lastSaved && !savePending && (
-              <span className="font-mono text-xs text-cms-text3">
+              <span className="font-mono text-xs text-cms-text-3">
                 saved{" "}
                 {lastSaved.toLocaleTimeString("en-US", {
                   hour: "2-digit",
@@ -126,14 +126,12 @@ export function EntryEditor({
               </span>
             )}
             {savePending && (
-              <span className="font-mono text-xs text-cms-text3">
-                saving…
-              </span>
+              <span className="font-mono text-xs text-cms-text-3">saving…</span>
             )}
             <button
               onClick={triggerSave}
               disabled={savePending}
-              className="px-3 py-1 rounded-cms border border-cms-border2 bg-transparent text-cms-text2 font-mono text-sm cursor-pointer disabled:opacity-60 hover:border-cms-accent transition-colors"
+              className="px-3 py-1 rounded-cms border border-cms-border-2 bg-transparent text-cms-text-2 font-mono text-sm cursor-pointer disabled:opacity-60 hover:border-cms-accent transition-colors"
             >
               Save
             </button>
@@ -163,11 +161,14 @@ export function EntryEditor({
       <aside className="w-60 shrink-0 border-l border-cms-border bg-cms-surface flex flex-col overflow-auto">
         {/* Status + publish */}
         <div className="p-4 border-b border-cms-border">
-          <p className="font-mono text-xs tracking-[0.08em] uppercase text-cms-text3 mb-2">
+          <p className="font-mono text-xs tracking-[0.08em] uppercase text-cms-text-3 mb-2">
             Status
           </p>
           <span
-            className={`inline-block font-mono text-sm px-2 py-0.5 rounded border mb-3 ${badge.cls}`}
+            className={cn(
+              `inline-block font-mono text-sm px-2 py-0.5 rounded border mb-3`,
+              badge.cls,
+            )}
           >
             {badge.label}
           </span>
@@ -193,7 +194,7 @@ export function EntryEditor({
                 })
               }
               disabled={publishPending}
-              className="block w-full py-1.5 rounded-cms border border-cms-border2 bg-transparent text-cms-text2 font-mono text-sm cursor-pointer disabled:opacity-60 hover:border-cms-accent transition-colors"
+              className="block w-full py-1.5 rounded-cms border border-cms-border-2 bg-transparent text-cms-text-2 font-mono text-sm cursor-pointer disabled:opacity-60 hover:border-cms-accent transition-colors"
             >
               {publishPending ? "Unpublishing…" : "Unpublish"}
             </button>
@@ -215,14 +216,17 @@ export function EntryEditor({
           />
 
           <div>
-            <label className="font-mono text-xs tracking-[0.08em] uppercase text-cms-text3 block mb-1.5">
+            <label className="font-mono text-xs tracking-[0.08em] uppercase text-cms-text-3 block mb-1.5">
               Slug
             </label>
             <input
               name="slug"
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
-              className={`${inputCls} ${saveState?.errors?.slug ? "border-[rgba(224,80,80,0.5)]" : ""}`}
+              className={cn(
+                inputCls,
+                saveState?.errors?.slug ? "border-[rgba(224,80,80,0.5)]" : "",
+              )}
             />
             {saveState?.errors?.slug?.map((e) => (
               <p key={e} className="font-mono text-xs text-cms-danger mt-1">
@@ -236,7 +240,7 @@ export function EntryEditor({
             .map((field) => (
               <div key={field.id}>
                 <div className="flex items-center gap-1.5 mb-1.5">
-                  <label className="font-mono text-xs tracking-[0.08em] uppercase text-cms-text3">
+                  <label className="font-mono text-xs tracking-[0.08em] uppercase text-cms-text-3">
                     {field.name}
                     {field.required && (
                       <span className="text-cms-danger ml-0.5">*</span>
@@ -270,10 +274,10 @@ export function EntryEditor({
         {/* Published at */}
         {entry.publishedAt && (
           <div className="px-4 py-3 border-b border-cms-border">
-            <p className="font-mono text-xs tracking-[0.08em] uppercase text-cms-text3 mb-1">
+            <p className="font-mono text-xs tracking-[0.08em] uppercase text-cms-text-3 mb-1">
               Published
             </p>
-            <p className="font-mono text-sm text-cms-text2">
+            <p className="font-mono text-sm text-cms-text-2">
               {new Date(entry.publishedAt).toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
@@ -288,13 +292,13 @@ export function EntryEditor({
           {!confirmDelete ? (
             <button
               onClick={() => setConfirmDelete(true)}
-              className="w-full py-1.5 rounded-cms border border-cms-border bg-transparent text-cms-text3 font-mono text-sm cursor-pointer hover:text-cms-danger hover:border-cms-danger-subtle transition-colors"
+              className="w-full py-1.5 rounded-cms border border-cms-border bg-transparent text-cms-text-3 font-mono text-sm cursor-pointer hover:text-cms-danger hover:border-cms-danger-subtle transition-colors"
             >
               Delete entry
             </button>
           ) : (
             <div className="flex flex-col gap-1.5">
-              <p className="font-mono text-sm text-cms-text2 text-center">
+              <p className="font-mono text-sm text-cms-text-2 text-center">
                 Are you sure?
               </p>
               <button
@@ -308,7 +312,7 @@ export function EntryEditor({
               </button>
               <button
                 onClick={() => setConfirmDelete(false)}
-                className="py-1.5 rounded-cms border border-cms-border bg-transparent text-cms-text3 font-mono text-sm cursor-pointer hover:border-cms-border2 transition-colors"
+                className="py-1.5 rounded-cms border border-cms-border bg-transparent text-cms-text-3 font-mono text-sm cursor-pointer hover:border-cms-border-2 transition-colors"
               >
                 Cancel
               </button>

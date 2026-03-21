@@ -54,7 +54,7 @@ export function DashboardClient({
         {greeting}
         {user?.displayName ? `, ${user.displayName}` : ""}.
       </p>
-      <p className="font-mono text-xs text-cms-text3 mt-2">{today}</p>
+      <p className="font-mono text-xs text-cms-text-3 mt-2">{today}</p>
 
       {/* Stats grid */}
       <div className="grid grid-cols-3 gap-3 mt-10">
@@ -62,12 +62,12 @@ export function DashboardClient({
           <Link
             key={label}
             href={href}
-            className="block p-5 rounded-cms-lg border border-cms-border bg-cms-surface hover:border-cms-border2 transition-colors duration-150 no-underline"
+            className="block p-5 rounded-cms-lg border border-cms-border bg-cms-surface hover:border-cms-border-2 transition-colors duration-150 no-underline"
           >
             <div className="font-mono text-2xl font-medium text-cms-accent leading-none">
               {value}
             </div>
-            <div className="font-mono text-xs tracking-widest uppercase text-cms-text3 mt-1.5">
+            <div className="font-mono text-xs tracking-widest uppercase text-cms-text-3 mt-1.5">
               {label}
             </div>
           </Link>
@@ -77,7 +77,7 @@ export function DashboardClient({
       {/* Collections list */}
       {collections.length > 0 ? (
         <div className="mt-10">
-          <p className="font-mono text-xs tracking-widest uppercase text-cms-text3 mb-3">
+          <p className="font-mono text-xs tracking-widest uppercase text-cms-text-3 mb-3">
             Collections
           </p>
           <div className="flex flex-col gap-1">
@@ -85,7 +85,7 @@ export function DashboardClient({
               <Link
                 key={col.id}
                 href={`/cms/collections/${col.id}`}
-                className="flex items-center gap-3 px-4 py-2.5 rounded-cms border border-cms-border bg-cms-surface hover:border-cms-border2 hover:bg-cms-surface2 transition-colors duration-150 no-underline"
+                className="flex items-center gap-3 px-4 py-2.5 rounded-cms border border-cms-border bg-cms-surface hover:border-cms-border-2 hover:bg-cms-surface-2 transition-colors duration-150 no-underline"
               >
                 <span className="text-sm w-5 text-center shrink-0">
                   {col.icon ?? "📄"}
@@ -93,7 +93,7 @@ export function DashboardClient({
                 <span className="flex-1 text-sm text-cms-text truncate">
                   {col.name}
                 </span>
-                <code className="font-mono text-sm text-cms-text3 hidden sm:block">
+                <code className="font-mono text-sm text-cms-text-3 hidden sm:block">
                   /api/v1/{col.slug}
                 </code>
                 <RoleBadge variant={col.role} />
@@ -103,7 +103,7 @@ export function DashboardClient({
         </div>
       ) : (
         <div className="mt-10 rounded-cms-lg border border-dashed border-cms-border px-6 py-10 text-center">
-          <p className="text-sm text-cms-text2 mb-3">No collections yet.</p>
+          <p className="text-sm text-cms-text-2 mb-3">No collections yet.</p>
           <Link
             href="/cms/collections/new"
             className="inline-block px-4 py-2 rounded-cms bg-cms-accent text-cms-accent-text font-mono text-xs font-medium no-underline hover:opacity-90 transition-opacity"

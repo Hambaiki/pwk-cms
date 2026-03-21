@@ -219,8 +219,12 @@ function Dropzone({
           if (e.dataTransfer.files.length) submitFiles(e.dataTransfer.files);
         }}
         onClick={() => inputRef.current?.click()}
-        className={`rounded-cms-lg border-[1.5px] border-dashed p-7 text-center cursor-pointer transition-all duration-150
-          ${dragging ? "border-cms-accent bg-cms-accent-dim" : "border-cms-border-2 hover:border-cms-accent"}`}
+        className={cn(
+          `rounded-cms-lg border-[1.5px] border-dashed p-7 text-center cursor-pointer transition-all duration-150`,
+          dragging
+            ? "border-cms-accent bg-cms-accent-dim"
+            : "border-cms-border-2 hover:border-cms-accent",
+        )}
       >
         <svg
           viewBox="0 0 24 24"
