@@ -3,6 +3,7 @@ import { eq, and } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { entries, collections, entryTags, tags } from "@/lib/db/schema";
 import { withPublicKey } from "@/lib/api/middleware";
+import { contentToHtml } from "@/lib/api/content";
 import { ok, notFound, forbidden } from "@/lib/api/response";
 import type { ApiContext } from "@/lib/api/middleware";
 
@@ -72,6 +73,7 @@ export const GET = withPublicKey(
       id: entry.id,
       slug: entry.slug,
       content: entry.content,
+      contentHtml: contentToHtml(entry.content),
       tags: entryTagRows,
       publishedAt: entry.publishedAt,
       updatedAt: entry.updatedAt,

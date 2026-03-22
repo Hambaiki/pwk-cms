@@ -182,8 +182,8 @@ export async function createEntry(collectionId: string): Promise<void> {
 
   if (!created) throw new Error("Failed to create entry");
 
-  revalidatePath(`/cms/entries/${collection.slug}`);
-  redirect(`/cms/editor/${created.id}`);
+  revalidatePath(`/cms/collections/${collectionId}/entries`);
+  redirect(`/cms/collections/${collectionId}/entries/${created.id}`);
 }
 
 // ─── Get or create page entry ──────────────────────────────────────────────────
@@ -317,7 +317,7 @@ export async function saveEntry(
     })
     .where(eq(entries.id, entryId));
 
-  revalidatePath(`/cms/editor/${entryId}`);
+  revalidatePath(`/cms/collections/${existing.collectionId}/entries/${entryId}`);
   return { message: "Saved." };
 }
 
@@ -340,7 +340,7 @@ export async function publishEntry(entryId: string): Promise<void> {
       updatedAt: new Date(),
     })
     .where(eq(entries.id, entryId));
-  revalidatePath(`/cms/editor/${entryId}`);
+  revalidatePath(`/cms/collections/${entry.collectionId}/entries/${entryId}`);
 }
 
 export async function unpublishEntry(entryId: string): Promise<void> {
@@ -356,14 +356,14 @@ export async function unpublishEntry(entryId: string): Promise<void> {
     .update(entries)
     .set({ status: "draft", publishedAt: null, updatedAt: new Date() })
     .where(eq(entries.id, entryId));
-  revalidatePath(`/cms/editor/${entryId}`);
+  revalidatePath(`/cms/collections/${entry.collectionId}/entries/${entryId}`);
 }
 
 // ─── Delete Entry ──────────────────────────────────────────────────────────────
 
 export async function deleteEntry(
   entryId: string,
-  collectionSlug: string,
+  collectionId: string,
 ): Promise<void> {
   const session = await verifySession();
   const [entry] = await db
@@ -382,6 +382,6 @@ export async function deleteEntry(
     throw new Error("Editors can only delete their own entries");
   }
   await db.delete(entries).where(eq(entries.id, entryId));
-  revalidatePath(`/cms/entries/${collectionSlug}`);
-  redirect(`/cms/entries/${collectionSlug}`);
+  revalidatePath(`/cms/collections/${collectionId}/entries`);
+  redirect(`/cms/collections/${collectionId}/entries`);
 }

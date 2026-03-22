@@ -86,7 +86,7 @@ export function ApiKeyList({ keys }: { keys: ApiKeyRow[] }) {
 
   const colCls =
     "grid gap-3 px-3.5 font-mono text-xs tracking-[0.07em] uppercase text-cms-text-3";
-  const cols = { gridTemplateColumns: "1fr 80px 110px 110px 80px" };
+  const cols = { gridTemplateColumns: "1fr 80px 110px 110px 150px" };
 
   return (
     <div className="flex flex-col gap-0.5">

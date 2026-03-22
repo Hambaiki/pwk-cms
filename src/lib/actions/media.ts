@@ -150,7 +150,7 @@ export async function uploadMedia(
     uploaded.push(row);
   }
 
-  revalidatePath(`/cms/media?collection=${collectionId}`);
+  revalidatePath(`/cms/collections/${collectionId}/media`);
 
   if (errors.length > 0 && uploaded.length === 0) {
     return { errors: { general: errors } };
@@ -208,6 +208,6 @@ export async function deleteMedia(id: string): Promise<{ error?: string }> {
   if (storageError) return { error: storageError.message };
 
   await db.delete(media).where(eq(media.id, id));
-  revalidatePath(`/cms/media?collection=${row.collectionId}`);
+  revalidatePath(`/cms/collections/${row.collectionId}/media`);
   return {};
 }

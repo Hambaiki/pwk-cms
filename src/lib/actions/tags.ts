@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { eq, asc, and } from 'drizzle-orm'
 import { db } from '@/lib/db'
-import { tags, entryTags } from '@/lib/db/schema'
+import { tags, entryTags, entries } from '@/lib/db/schema'
 import type { Tag } from '@/lib/db/schema'
 import { verifySession } from '@/lib/dal'
 import { requireCollectionRole } from '@/lib/actions/collections'
@@ -115,5 +115,12 @@ export async function setEntryTags(entryId: string, tagIds: string[]): Promise<v
   if (tagIds.length > 0) {
     await db.insert(entryTags).values(tagIds.map((tagId) => ({ entryId, tagId })))
   }
-  revalidatePath(`/cms/editor/${entryId}`)
+  const [entry] = await db
+    .select({ collectionId: entries.collectionId })
+    .from(entries)
+    .where(eq(entries.id, entryId))
+    .limit(1);
+  if (entry) {
+    revalidatePath(`/cms/collections/${entry.collectionId}/entries/${entryId}`)
+  }
 }

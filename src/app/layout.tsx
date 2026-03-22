@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { cn } from "@/lib/utils";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -25,7 +26,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={cn(
+          geistSans.variable,
+          geistMono.variable,
+          "antialiased",
+          "bg-cms-bg text-cms-text",
+          "scrollbar-thin scrollbar-track-cms-surface scrollbar-thumb-cms-border-2 hover:scrollbar-thumb-cms-text-3",
+        )}
+        style={{
+          backgroundImage:
+            "linear-gradient(var(--cms-border) 1px, transparent 1px), linear-gradient(90deg, var(--cms-border) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+        }}
       >
         {children}
       </body>

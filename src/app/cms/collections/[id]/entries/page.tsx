@@ -5,27 +5,35 @@ import {
   getEntriesByCollection,
   getOrCreatePageEntry,
 } from "@/lib/actions/entries";
+import { getCollectionById } from "@/lib/actions/collections";
 import { NewEntryButton } from "@/components/editor/NewEntryButton";
 import { StatusBadge } from "@/components/entry/StatusBadge";
 
-type Props = { params: Promise<{ collection: string }> };
+type Props = { params: Promise<{ id: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { collection: collectionSlug } = await params;
-  return { title: `${collectionSlug} — pwk-cms` };
+  return { title: `Entries — pwk-cms` };
 }
 
 export default async function EntriesPage({ params }: Props) {
-  const { collection: collectionSlug } = await params;
-  const result = await getEntriesByCollection(collectionSlug);
+  const { id } = await params;
+  
+  // First, get the collection to get its slug
+  const collectionResult = await getCollectionById(id);
+  if (!collectionResult) notFound();
+  
+  const { collection: col } = collectionResult;
+  
+  // Then fetch entries using the slug
+  const result = await getEntriesByCollection(col.slug);
   if (!result) notFound();
 
-  const { collection, entries } = result;
+  const { entries } = result;
 
   // Page collections have exactly one entry — go straight to the editor
-  if (collection.isPage) {
-    const entryId = await getOrCreatePageEntry(collection.id);
-    redirect(`/cms/editor/${entryId}`);
+  if (col.isPage) {
+    const entryId = await getOrCreatePageEntry(col.id);
+    redirect(`/cms/collections/${col.id}/entries/${entryId}`);
   }
 
   return (
@@ -33,17 +41,17 @@ export default async function EntriesPage({ params }: Props) {
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-7">
         <div className="flex items-center gap-3">
-          <span className="text-2xl">{collection.icon ?? "📄"}</span>
+          <span className="text-2xl">{col.icon ?? "📄"}</span>
           <div>
             <h1 className="text-lg font-medium text-cms-text leading-tight">
-              {collection.name}
+              {col.name}
             </h1>
             <code className="font-mono text-sm text-cms-text-3">
-              /api/v1/{collection.slug}
+              /api/v1/{col.slug}
             </code>
           </div>
         </div>
-        <NewEntryButton collectionId={collection.id} />
+        <NewEntryButton collectionId={col.id} />
       </div>
 
       {entries.length === 0 ? (
@@ -101,14 +109,12 @@ export default async function EntriesPage({ params }: Props) {
                 })}
               </span>
 
-              <div className="flex justify-end">
-                <Link
-                  href={`/cms/editor/${entry.id}`}
-                  className="font-mono text-sm text-cms-accent px-2.5 py-1 rounded-cms border border-cms-accent-border bg-cms-accent-subtle hover:bg-cms-accent-dim transition-colors no-underline"
-                >
-                  Edit
-                </Link>
-              </div>
+              <Link
+                href={`/cms/collections/${col.id}/entries/${entry.id}`}
+                className="px-2.5 py-1.5 rounded-cms border border-cms-border bg-transparent text-cms-text-2 font-mono text-xs hover:border-cms-accent transition-colors no-underline text-center"
+              >
+                Edit
+              </Link>
             </div>
           ))}
         </div>

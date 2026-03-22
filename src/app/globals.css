@@ -54,6 +54,10 @@
   --radius-cms-xl: 12px;
 }
 
+html {
+  color-scheme: dark;
+}
+
 /* ─── Raw CSS variables ───────────────────────────────────────────────────────
    Mirror of @theme tokens for use in arbitrary Tailwind values [var(--cms-*)].
 ──────────────────────────────────────────────────────────────────────────── */

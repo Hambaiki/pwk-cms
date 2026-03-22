@@ -81,7 +81,7 @@ function EndpointRow({
   description: string;
 }) {
   return (
-    <div className="flex items-start gap-3 px-4 py-3 border-b border-cms-border last:border-b-0">
+    <div className="flex items-center gap-3 px-4 py-3 border-b border-cms-border last:border-b-0">
       <MethodBadge method={method} />
       <div className="min-w-0">
         <code className="font-mono text-xs text-cms-text">{path}</code>
@@ -141,9 +141,35 @@ export function ApiDocsClient({ collection, fields, origin }: Props) {
     id: "entry-uuid",
     slug: `example-${collection.slug}`,
     content: exampleContent,
+    contentHtml: {
+      ...Object.fromEntries(
+        Object.entries(exampleContent).map(([key, value]) => {
+          if (typeof value === "string") return [key, value];
+          if (Array.isArray(value)) {
+            return [
+              key,
+              value
+                .map((block) => {
+                  if (block && typeof block === "object" && "type" in block) {
+                    if ((block as any).type === "paragraph") {
+                      const text = ((block as any).content ?? [])
+                        .map((i: any) => i.text ?? "")
+                        .join("");
+                      return `<p>${text}</p>`;
+                    }
+                  }
+                  return "";
+                })
+                .join(""),
+            ];
+          }
+          return [key, ""];
+        }),
+      ),
+    },
     tags: [{ name: "Example", slug: "example" }],
-    publishedAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    publishedAt: "2026-03-22T00:00:00.000Z",
+    updatedAt: "2026-03-22T00:00:00.000Z",
   };
 
   const listResponse = {

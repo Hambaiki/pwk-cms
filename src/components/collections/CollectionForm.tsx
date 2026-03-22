@@ -20,7 +20,7 @@ function slugify(value: string) {
 // ─── Shared input class ────────────────────────────────────────────────────────
 
 const baseInput =
-  "w-full font-mono text-xs px-2.5 py-1.5 rounded-cms border bg-cms-surface-2 text-cms-text placeholder:text-cms-text-3 outline-none transition-colors";
+  "w-full font-mono text-sm px-2.5 py-1.5 rounded-cms border bg-cms-surface-2 text-cms-text placeholder:text-cms-text-3 outline-none transition-colors";
 const inputCls = (hasError?: boolean) =>
   cn(
     baseInput,
@@ -66,7 +66,7 @@ export function CollectionForm(props: Props) {
       {state?.errors?.general?.map((msg) => (
         <p
           key={msg}
-          className="font-mono text-xs text-cms-danger bg-cms-danger-dim border border-cms-danger-border rounded-cms px-3 py-2"
+          className="font-mono text-sm text-cms-danger bg-cms-danger-dim border border-cms-danger-border rounded-cms px-3 py-2"
         >
           {msg}
         </p>
@@ -74,7 +74,7 @@ export function CollectionForm(props: Props) {
 
       {/* Success message */}
       {state?.message && (
-        <p className="font-mono text-xs text-cms-success bg-cms-success-subtle border border-cms-success-border rounded-cms px-3 py-2">
+        <p className="font-mono text-sm text-cms-success bg-cms-success-subtle border border-cms-success-border rounded-cms px-3 py-2">
           {state.message}
         </p>
       )}
@@ -96,7 +96,7 @@ export function CollectionForm(props: Props) {
             className={inputCls(!!state?.errors?.name)}
           />
           {state?.errors?.name?.map((e) => (
-            <p key={e} className="font-mono text-xs text-cms-danger mt-1">
+            <p key={e} className="font-mono text-sm text-cms-danger mt-1">
               {e}
             </p>
           ))}
@@ -142,7 +142,7 @@ export function CollectionForm(props: Props) {
           />
         </div>
         {state?.errors?.slug?.map((e) => (
-          <p key={e} className="font-mono text-xs text-cms-danger mt-1">
+          <p key={e} className="font-mono text-sm text-cms-danger mt-1">
             {e}
           </p>
         ))}
@@ -172,7 +172,7 @@ export function CollectionForm(props: Props) {
           defaultChecked={collection?.isPage ?? false}
           className="w-4 h-4 rounded accent-cms-accent border-cms-border bg-cms-surface-2"
         />
-        <span className="font-mono text-xs text-cms-text-2">
+        <span className="font-mono text-sm text-cms-text-2">
           Single instance (page)
         </span>
         <span className="font-mono text-sm text-cms-text-3">
@@ -185,7 +185,7 @@ export function CollectionForm(props: Props) {
           type="submit"
           disabled={pending}
           className={cn(
-            "px-5 py-2 rounded-cms font-mono text-xs font-medium transition-all duration-200",
+            "px-5 py-2 rounded-cms font-mono text-sm font-medium transition-all duration-200",
             "bg-cms-accent text-cms-accent-text shadow-sm",
             "hover:brightness-110 hover:shadow-md active:scale-[0.98]",
             "disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100",

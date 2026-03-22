@@ -7,11 +7,12 @@ import type { Tag } from "@/lib/db/schema";
 
 type Props = {
   entryId: string;
+  collectionId: string;
   initialTags: Tag[];
   allTags: Tag[];
 };
 
-export function EntryTagPicker({ entryId, initialTags, allTags }: Props) {
+export function EntryTagPicker({ entryId, collectionId, initialTags, allTags }: Props) {
   const [selected, setSelected] = useState<Set<string>>(
     new Set(initialTags.map((t) => t.id)),
   );
@@ -135,7 +136,7 @@ export function EntryTagPicker({ entryId, initialTags, allTags }: Props) {
         <p className="font-mono text-xs text-cms-text-3">
           No tags yet.{" "}
           <a
-            href="/cms/tags"
+            href={`/cms/collections/${collectionId}/settings/tags`}
             className="text-cms-accent hover:underline underline-offset-2"
           >
             Create some

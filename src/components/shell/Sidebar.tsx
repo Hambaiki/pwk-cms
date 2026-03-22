@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getCollections } from "@/lib/actions/collections";
 import { getOptionalSession } from "@/lib/dal";
 import { NavLinks } from "./NavLinks";
+import { BrandIcon } from "@/components/BrandIcon";
 
 export async function Sidebar() {
   const [collections, session] = await Promise.all([
@@ -20,47 +21,8 @@ export async function Sidebar() {
       }}
     >
       {/* Brand */}
-      <div className="flex items-center gap-2.5 px-4 pt-4.5 pb-3.5 border-b border-cms-border shrink-0">
-        <div className="text-cms-accent" aria-hidden="true">
-          <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
-            <rect
-              x="2"
-              y="2"
-              width="7"
-              height="7"
-              rx="1.5"
-              fill="currentColor"
-              opacity="1"
-            />
-            <rect
-              x="11"
-              y="2"
-              width="7"
-              height="7"
-              rx="1.5"
-              fill="currentColor"
-              opacity="0.5"
-            />
-            <rect
-              x="2"
-              y="11"
-              width="7"
-              height="7"
-              rx="1.5"
-              fill="currentColor"
-              opacity="0.5"
-            />
-            <rect
-              x="11"
-              y="11"
-              width="7"
-              height="7"
-              rx="1.5"
-              fill="currentColor"
-              opacity="0.25"
-            />
-          </svg>
-        </div>
+      <div className="flex items-center gap-2.5 p-4 h-14 border-b border-cms-border shrink-0">
+        <BrandIcon size={20} withText={false} />
         <span className="font-mono text-base font-medium text-cms-text tracking-tight">
           pwk<span className="text-cms-accent">cms</span>
         </span>

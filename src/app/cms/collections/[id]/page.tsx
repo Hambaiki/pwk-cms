@@ -5,11 +5,13 @@ import {
   getCollectionById,
   getCollectionStats,
 } from "@/lib/actions/collections";
+import { getEntriesByCollection } from "@/lib/actions/entries";
 import { DeleteCollectionButton } from "@/components/collections/DeleteCollectionButton";
 import { CollectionForm } from "@/components/collections/CollectionForm";
 import { NewEntryButton } from "@/components/editor/NewEntryButton";
 import { EditPageButton } from "@/components/editor/EditPageButton";
 import { RoleBadge } from "@/components/members/RoleBadge";
+import { Book, Image, Wrench } from "lucide-react";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -73,6 +75,8 @@ export default async function CollectionOverviewPage({ params }: Props) {
   const canEdit = role === "owner" || role === "editor";
 
   const stats = await getCollectionStats(id);
+  const entriesResult = await getEntriesByCollection(collection.slug);
+  const recentEntries = entriesResult?.entries.slice(0, 5) ?? [];
 
   return (
     <div className="p-8 mx-auto space-y-8">
@@ -113,11 +117,14 @@ export default async function CollectionOverviewPage({ params }: Props) {
       </div>
 
       {/* ── Stats ────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {[
           { label: "Total entries", value: stats.totalEntries },
           { label: "Published", value: stats.publishedEntries },
+          { label: "Draft", value: stats.draftEntries },
           { label: "Media files", value: stats.totalMedia },
+          { label: "Team members", value: stats.totalMembers },
+          { label: "API keys", value: stats.totalApiKeys },
         ].map(({ label, value }) => (
           <div
             key={label}
@@ -144,54 +151,90 @@ export default async function CollectionOverviewPage({ params }: Props) {
           ) : (
             <>
               <Link
-                href={`/cms/entries/${collection.slug}`}
+                href={`/cms/collections/${id}/entries`}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-cms border border-cms-border bg-transparent text-cms-text-2 font-mono text-xs hover:border-cms-border-2 transition-colors no-underline"
               >
-                <svg viewBox="0 0 14 14" fill="none" width="12" height="12">
-                  <path
-                    d="M2 3h10M2 7h7M2 11h5"
-                    stroke="currentColor"
-                    strokeWidth="1.2"
-                    strokeLinecap="round"
-                  />
-                </svg>
+                <Book size={16} />
                 View entries
               </Link>
               {canEdit && <NewEntryButton collectionId={collection.id} />}
             </>
           )}
           <Link
-            href={`/cms/media?collection=${collection.id}`}
+            href={`/cms/collections/${id}/media`}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-cms border border-cms-border bg-transparent text-cms-text-2 font-mono text-xs hover:border-cms-border-2 transition-colors no-underline"
           >
-            <svg viewBox="0 0 14 14" fill="none" width="12" height="12">
-              <rect
-                x="1"
-                y="2"
-                width="12"
-                height="10"
-                rx="1.5"
-                stroke="currentColor"
-                strokeWidth="1.2"
-              />
-              <circle
-                cx="4.5"
-                cy="5.5"
-                r="1.5"
-                stroke="currentColor"
-                strokeWidth="1.2"
-              />
-              <path
-                d="M1 9l3-2.5 2.5 2 1.5-1.5 4 4"
-                stroke="currentColor"
-                strokeWidth="1.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <Image size={16} />
             Media library
           </Link>
         </div>
+      </div>
+
+      {/* ── Fields snapshot ───────────────────────────────────────── */}
+      <div className="rounded-cms-lg border border-cms-border bg-cms-surface p-5">
+        <p className="font-mono text-xs tracking-widest uppercase text-cms-text-3 mb-3">
+          Schema overview
+        </p>
+        <p className="text-sm text-cms-text mb-2">
+          {fields.length} field{fields.length === 1 ? "" : "s"} defined.
+        </p>
+        <div className="grid grid-cols-1 gap-2">
+          {fields.slice(0, 6).map((field) => (
+            <div
+              key={field.id}
+              className="rounded-cms border border-cms-border bg-cms-surface-2 px-3 py-2 text-xs font-mono text-cms-text-2"
+            >
+              {field.name} • {field.type}
+            </div>
+          ))}
+          {fields.length > 6 && (
+            <div className="text-xs font-mono text-cms-text-3 mt-1">
+              +{fields.length - 6} more fields
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── Recent entries ─────────────────────────────────────────── */}
+      <div className="rounded-cms-lg border border-cms-border bg-cms-surface p-5">
+        <div className="flex items-center justify-between mb-3">
+          <p className="font-mono text-xs tracking-widest uppercase text-cms-text-3">
+            Recent entries
+          </p>
+          <Link
+            href={`/cms/collections/${id}/entries`}
+            className="font-mono text-xs text-cms-accent hover:underline"
+          >
+            View all
+          </Link>
+        </div>
+        {recentEntries.length === 0 ? (
+          <p className="text-sm text-cms-text-2">No entries available yet.</p>
+        ) : (
+          <div className="space-y-2">
+            {recentEntries.map((entry) => (
+              <Link
+                key={entry.id}
+                href={`/cms/collections/${id}/entries/${entry.id}`}
+                className="block rounded-cms border border-cms-border bg-cms-surface-2 px-3 py-2 text-sm text-cms-text no-underline hover:bg-cms-surface"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-mono truncate">{entry.slug}</span>
+                  <span className="text-xs text-cms-text-3">
+                    {entry.status}
+                  </span>
+                </div>
+                <span className="font-mono text-xs text-cms-text-3">
+                  {new Date(entry.updatedAt).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </span>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* ── Sub-page cards ────────────────────────────────────────── */}
@@ -201,102 +244,12 @@ export default async function CollectionOverviewPage({ params }: Props) {
         </p>
 
         <SubPageCard
-          href={`/cms/collections/${id}/schema`}
-          label="Schema"
-          description={`${fields.length} field${fields.length !== 1 ? "s" : ""} defined`}
-          icon={
-            <svg viewBox="0 0 16 16" fill="none" width="16" height="16">
-              <rect
-                x="2"
-                y="2"
-                width="12"
-                height="3"
-                rx="1"
-                stroke="currentColor"
-                strokeWidth="1.2"
-              />
-              <rect
-                x="2"
-                y="7"
-                width="8"
-                height="3"
-                rx="1"
-                stroke="currentColor"
-                strokeWidth="1.2"
-              />
-              <rect
-                x="2"
-                y="12"
-                width="5"
-                height="2"
-                rx="1"
-                stroke="currentColor"
-                strokeWidth="1.2"
-              />
-            </svg>
-          }
-        />
-
-        {isOwner && (
-          <SubPageCard
-            href={`/cms/collections/${id}/members`}
-            label="Members & API keys"
-            description={`${stats.totalMembers} member${stats.totalMembers !== 1 ? "s" : ""} · ${stats.totalApiKeys} key${stats.totalApiKeys !== 1 ? "s" : ""}`}
-            icon={
-              <svg viewBox="0 0 16 16" fill="none" width="16" height="16">
-                <circle
-                  cx="6"
-                  cy="5"
-                  r="2.5"
-                  stroke="currentColor"
-                  strokeWidth="1.2"
-                />
-                <path
-                  d="M1 13c0-2.761 2.239-4 5-4s5 1.239 5 4"
-                  stroke="currentColor"
-                  strokeWidth="1.2"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M12 7a2 2 0 100-4M15 13c0-2-1.5-3.5-3-4"
-                  stroke="currentColor"
-                  strokeWidth="1.2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            }
-          />
-        )}
-
-        <SubPageCard
-          href={`/cms/collections/${id}/api`}
-          label="API reference"
-          description={`GET /api/v1/${collection.slug}`}
-          icon={
-            <svg viewBox="0 0 16 16" fill="none" width="16" height="16">
-              <path
-                d="M3 5l4 4-4 4M9 13h5"
-                stroke="currentColor"
-                strokeWidth="1.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          }
+          href={`/cms/collections/${id}/settings`}
+          label="Settings & members"
+          description="Schema, tags, members & API keys"
+          icon={<Wrench size={16} />}
         />
       </div>
-
-      {/* ── Settings (owner only) ─────────────────────────────────── */}
-      {isOwner && (
-        <div className="space-y-3">
-          <p className="font-mono text-xs tracking-widest uppercase text-cms-text-3">
-            Settings
-          </p>
-          <div className="rounded-cms-lg border border-cms-border bg-cms-surface p-6">
-            <CollectionForm mode="edit" collection={collection} />
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -21,15 +21,9 @@ import type { EntryFormState } from "@/lib/actions/entries";
 import type { Entry, Collection, Field, Tag } from "@/lib/db/schema";
 import { EntryTagPicker } from "@/components/tags/EntryTagPicker";
 import { MediaPicker } from "@/components/media/MediaPicker";
+import { MediaBrowser } from "@/components/media/MediaBrowser";
 
-const BlockNoteEditorComponent = dynamic(() => import("./BlockNoteEditor"), {
-  ssr: false,
-  loading: () => (
-    <div className="px-16 py-12 font-mono text-xs text-cms-text-3">
-      Loading editor…
-    </div>
-  ),
-});
+import BlockNoteEditorComponent from "./BlockNoteEditor";
 
 type Props = {
   entry: Entry;
@@ -88,6 +82,11 @@ export function EntryEditor({
     autoSaveTimer.current = setTimeout(triggerSave, 3000);
   }, [triggerSave]);
 
+  const handleContentChange = useCallback((c: unknown) => {
+    setContent(c);
+    scheduleAutoSave();
+  }, [scheduleAutoSave]);
+
   useEffect(
     () => () => {
       if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
@@ -139,13 +138,10 @@ export function EntryEditor({
         </div>
 
         {/* BlockNote */}
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto p-2">
           <BlockNoteEditorComponent
-            initialContent={entry.content as any}
-            onChange={(c) => {
-              setContent(c);
-              scheduleAutoSave();
-            }}
+            initialContent={entry.content}
+            onChange={handleContentChange}
           />
         </div>
 
@@ -266,10 +262,14 @@ export function EntryEditor({
         <div className="p-4 border-b border-cms-border">
           <EntryTagPicker
             entryId={entry.id}
+            collectionId={collection.id}
             initialTags={entryTags}
             allTags={allTags}
           />
         </div>
+
+        {/* Media Browser */}
+        <MediaBrowser collectionId={collection.id} />
 
         {/* Published at */}
         {entry.publishedAt && (
@@ -303,7 +303,7 @@ export function EntryEditor({
               </p>
               <button
                 onClick={() =>
-                  startDelete(() => deleteEntry(entry.id, collection.slug))
+                  startDelete(() => deleteEntry(entry.id, collection.id))
                 }
                 disabled={deletePending}
                 className="py-1.5 rounded-cms border border-cms-danger-subtle bg-cms-danger-dim text-cms-danger font-mono text-sm cursor-pointer disabled:opacity-60"

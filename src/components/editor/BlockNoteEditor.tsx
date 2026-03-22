@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
@@ -20,16 +20,16 @@ export default function BlockNoteEditor({ initialContent, onChange }: Props) {
     const c = initialContent as Record<string, unknown>;
     if (Array.isArray(c.blocks)) return c.blocks as Block[];
     return undefined;
-  }, []);
+  }, [initialContent]);
 
   const editor = useCreateBlockNote({
     initialContent: initial,
   });
 
-  useEffect(() => {
-    // Fire initial content so parent has it even before first keystroke
+  // Memoize the onChange handler to prevent unnecessary re-renders
+  const handleEditorChange = useCallback(() => {
     onChange(editor.document);
-  }, []);
+  }, [onChange, editor]);
 
   return (
     <div
@@ -55,7 +55,7 @@ export default function BlockNoteEditor({ initialContent, onChange }: Props) {
     >
       <BlockNoteView
         editor={editor}
-        onChange={() => onChange(editor.document)}
+        onChange={handleEditorChange}
         theme="dark"
         style={{ minHeight: "400px" }}
       />

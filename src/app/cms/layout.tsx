@@ -12,7 +12,7 @@ export default async function CMSLayout({ children }: { children: ReactNode }) {
       <div className="flex flex-col flex-1 overflow-hidden min-w-0">
         <Topbar />
         <main
-          className="flex-1 overflow-y-auto bg-cms-bg scrollbar-thin scrollbar-thumb-cms-border"
+          className="flex-1 overflow-y-auto bg-cms-bg"
           style={{
             backgroundImage:
               "linear-gradient(var(--cms-border) 1px, transparent 1px), linear-gradient(90deg, var(--cms-border) 1px, transparent 1px)",

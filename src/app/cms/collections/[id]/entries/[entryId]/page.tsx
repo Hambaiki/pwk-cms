@@ -4,7 +4,7 @@ import { getEntryById } from "@/lib/actions/entries";
 import { getTags, getEntryTags } from "@/lib/actions/tags";
 import { EntryEditor } from "@/components/editor/EntryEditor";
 
-type Props = { params: Promise<{ entryId: string }> };
+type Props = { params: Promise<{ id: string; entryId: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { entryId } = await params;
