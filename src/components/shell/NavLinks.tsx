@@ -215,9 +215,7 @@ function CollectionNavItem({
 
 function NavSection({ children }: { children: React.ReactNode }) {
   return (
-    <div className="border-b border-cms-border last:border-b-0">
-      {children}
-    </div>
+    <div className="border-b border-cms-border last:border-b-0">{children}</div>
   );
 }
 

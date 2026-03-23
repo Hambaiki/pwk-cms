@@ -17,13 +17,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function EntriesPage({ params }: Props) {
   const { id } = await params;
-  
+
   // First, get the collection to get its slug
   const collectionResult = await getCollectionById(id);
   if (!collectionResult) notFound();
-  
+
   const { collection: col } = collectionResult;
-  
+
   // Then fetch entries using the slug
   const result = await getEntriesByCollection(col.slug);
   if (!result) notFound();
