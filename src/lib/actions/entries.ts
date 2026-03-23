@@ -239,6 +239,7 @@ const SaveSchema = z.object({
     .max(200)
     .regex(/^[a-z0-9-]+$/),
   content: z.string().min(2),
+  contentHtml: z.string().default(''),
 });
 
 export async function saveEntry(
@@ -251,6 +252,7 @@ export async function saveEntry(
     entryId: formData.get("entryId"),
     slug: formData.get("slug"),
     content: formData.get("content"),
+    contentHtml: formData.get("contentHtml"),
   });
 
   if (!validated.success) {
@@ -260,7 +262,7 @@ export async function saveEntry(
     };
   }
 
-  const { entryId, slug } = validated.data;
+  const { entryId, slug, contentHtml } = validated.data;
   let content: unknown;
   try {
     content = JSON.parse(validated.data.content);
@@ -313,6 +315,7 @@ export async function saveEntry(
     .set({
       slug,
       content: content as Record<string, unknown>,
+      contentHtml,
       updatedAt: new Date(),
     })
     .where(eq(entries.id, entryId));

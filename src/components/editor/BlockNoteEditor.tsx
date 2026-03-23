@@ -8,7 +8,7 @@ import type { Block } from "@blocknote/core";
 
 type Props = {
   initialContent?: unknown;
-  onChange: (content: unknown) => void;
+  onChange: (content: Block[], contentHtml?: string) => void;
 };
 
 export default function BlockNoteEditor({ initialContent, onChange }: Props) {
@@ -27,8 +27,15 @@ export default function BlockNoteEditor({ initialContent, onChange }: Props) {
   });
 
   // Memoize the onChange handler to prevent unnecessary re-renders
-  const handleEditorChange = useCallback(() => {
-    onChange(editor.document);
+  const handleEditorChange = useCallback(async () => {
+    const blocks = editor.document;
+    try {
+      const html = await editor.blocksToHTMLLossy(blocks);
+      onChange(blocks, html);
+    } catch {
+      // If conversion fails, just pass the blocks without HTML
+      onChange(blocks);
+    }
   }, [onChange, editor]);
 
   return (

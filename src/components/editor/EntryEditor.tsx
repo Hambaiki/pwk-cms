@@ -11,6 +11,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import dynamic from "next/dynamic";
+import type { Block } from "@blocknote/core";
 import {
   saveEntry,
   publishEntry,
@@ -56,7 +57,12 @@ export function EntryEditor({
   entryTags,
 }: Props) {
   const [slug, setSlug] = useState(entry.slug);
-  const [content, setContent] = useState<unknown>(entry.content ?? {});
+  const [content, setContent] = useState<Block[]>(
+    Array.isArray(entry.content) ? entry.content : [],
+  );
+  const [contentHtml, setContentHtml] = useState<string>(
+    entry.contentHtml ?? "",
+  );
   const [saveState, saveAction, savePending] = useActionState<
     EntryFormState,
     FormData
@@ -69,23 +75,36 @@ export function EntryEditor({
 
   const formRef = useRef<HTMLFormElement>(null);
   const contentInputRef = useRef<HTMLInputElement>(null);
+  const contentHtmlInputRef = useRef<HTMLInputElement>(null);
   const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const triggerSave = useCallback(() => {
-    if (!formRef.current || !contentInputRef.current) return;
+    if (
+      !formRef.current ||
+      !contentInputRef.current ||
+      !contentHtmlInputRef.current
+    )
+      return;
     contentInputRef.current.value = JSON.stringify(content);
+    contentHtmlInputRef.current.value = contentHtml;
     formRef.current.requestSubmit();
-  }, [content]);
+  }, [content, contentHtml]);
 
   const scheduleAutoSave = useCallback(() => {
     if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
     autoSaveTimer.current = setTimeout(triggerSave, 3000);
   }, [triggerSave]);
 
-  const handleContentChange = useCallback((c: unknown) => {
-    setContent(c);
-    scheduleAutoSave();
-  }, [scheduleAutoSave]);
+  const handleContentChange = useCallback(
+    (c: Block[], html?: string) => {
+      setContent(c);
+      if (html !== undefined) {
+        setContentHtml(html);
+      }
+      scheduleAutoSave();
+    },
+    [scheduleAutoSave],
+  );
 
   useEffect(
     () => () => {
@@ -209,6 +228,12 @@ export function EntryEditor({
             name="content"
             ref={contentInputRef}
             defaultValue={JSON.stringify(content)}
+          />
+          <input
+            type="hidden"
+            name="contentHtml"
+            ref={contentHtmlInputRef}
+            defaultValue=""
           />
 
           <div>

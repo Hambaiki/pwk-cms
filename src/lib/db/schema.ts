@@ -103,6 +103,7 @@ export const entries = pgTable('entries', {
   slug:         text('slug').notNull(),
   status:       entryStatusEnum('status').default('draft').notNull(),
   content:      jsonb('content').notNull().default({}),
+  contentHtml:  text('content_html').default('').notNull(),
   authorId:     uuid('author_id').references(() => profiles.id, { onDelete: 'set null' }),
   publishedAt:  timestamp('published_at', { withTimezone: true }),
   createdAt:    timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),

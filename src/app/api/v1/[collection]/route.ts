@@ -3,7 +3,6 @@ import { eq, and, desc, count, inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { entries, collections, entryTags, tags } from "@/lib/db/schema";
 import { withPublicKey } from "@/lib/api/middleware";
-import { contentToHtml } from "@/lib/api/content";
 import {
   ok,
   paginated,
@@ -81,6 +80,7 @@ export const GET = withPublicKey(
           id: entries.id,
           slug: entries.slug,
           content: entries.content,
+          contentHtml: entries.contentHtml,
           publishedAt: entries.publishedAt,
           createdAt: entries.createdAt,
           updatedAt: entries.updatedAt,
@@ -100,6 +100,7 @@ export const GET = withPublicKey(
           id: entries.id,
           slug: entries.slug,
           content: entries.content,
+          contentHtml: entries.contentHtml,
           publishedAt: entries.publishedAt,
           createdAt: entries.createdAt,
           updatedAt: entries.updatedAt,
@@ -143,7 +144,7 @@ export const GET = withPublicKey(
       id: e.id,
       slug: e.slug,
       content: e.content,
-      contentHtml: contentToHtml(e.content),
+      contentHtml: e.contentHtml,
       tags: tagsByEntry[e.id] ?? [],
       publishedAt: e.publishedAt,
       updatedAt: e.updatedAt,
