@@ -155,6 +155,55 @@ export async function getEntryById(
   return { entry, collection, fields: collectionFields };
 }
 
+export async function getEntryBySlug(
+  collectionSlug: string,
+  entrySlug: string,
+): Promise<EntryDetail | null> {
+  const session = await verifySession();
+
+  // First find the collection by slug (scoped to user's collections)
+  const [collection] = await db
+    .select()
+    .from(collections)
+    .innerJoin(
+      collectionMembers,
+      and(
+        eq(collectionMembers.collectionId, collections.id),
+        eq(collectionMembers.userId, session.userId),
+      ),
+    )
+    .where(eq(collections.slug, collectionSlug))
+    .limit(1);
+
+  if (!collection) return null;
+
+  // Then find the entry by slug within that collection
+  const [entry] = await db
+    .select()
+    .from(entries)
+    .where(
+      and(
+        eq(entries.collectionId, collection.collection_members.collectionId),
+        eq(entries.slug, entrySlug),
+      ),
+    )
+    .limit(1);
+
+  if (!entry) return null;
+
+  const collectionFields = await db
+    .select()
+    .from(fields)
+    .where(eq(fields.collectionId, collection.collection_members.collectionId))
+    .orderBy(asc(fields.sortOrder));
+
+  return {
+    entry,
+    collection: collection.collections,
+    fields: collectionFields,
+  };
+}
+
 // ─── Create Entry ───────────────────────────────────────────────────────────────
 
 export async function createEntry(collectionId: string): Promise<void> {
@@ -239,7 +288,7 @@ const SaveSchema = z.object({
     .max(200)
     .regex(/^[a-z0-9-]+$/),
   content: z.string().min(2),
-  contentHtml: z.string().default(''),
+  contentHtml: z.string().default(""),
 });
 
 export async function saveEntry(
@@ -320,7 +369,9 @@ export async function saveEntry(
     })
     .where(eq(entries.id, entryId));
 
-  revalidatePath(`/cms/collections/${existing.collectionId}/entries/${entryId}`);
+  revalidatePath(
+    `/cms/collections/${existing.collectionId}/entries/${entryId}`,
+  );
   return { message: "Saved." };
 }
 

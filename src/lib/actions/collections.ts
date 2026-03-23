@@ -169,9 +169,7 @@ export async function getCollections(): Promise<
   }
 }
 
-export async function getCollectionById(
-  id: string,
-): Promise<{
+export async function getCollectionById(id: string): Promise<{
   collection: Collection;
   fields: Field[];
   role: MemberRole;
@@ -196,6 +194,45 @@ export async function getCollectionById(
     .orderBy(asc(fields.sortOrder), asc(fields.createdAt));
 
   return { collection, fields: collectionFields, role };
+}
+
+export async function getCollectionBySlug(slug: string): Promise<{
+  collection: Collection;
+  fields: Field[];
+  role: MemberRole;
+} | null> {
+  const session = await verifySession();
+
+  // Find collection by slug, scoped to collections the user is a member of
+  const [result] = await db
+    .select({
+      collection: collections,
+      role: collectionMembers.role,
+    })
+    .from(collections)
+    .innerJoin(
+      collectionMembers,
+      and(
+        eq(collectionMembers.collectionId, collections.id),
+        eq(collectionMembers.userId, session.userId),
+      ),
+    )
+    .where(eq(collections.slug, slug))
+    .limit(1);
+
+  if (!result) return null;
+
+  const collectionFields = await db
+    .select()
+    .from(fields)
+    .where(eq(fields.collectionId, result.collection.id))
+    .orderBy(asc(fields.sortOrder), asc(fields.createdAt));
+
+  return {
+    collection: result.collection,
+    fields: collectionFields,
+    role: result.role as MemberRole,
+  };
 }
 
 // ─── Create Collection ─────────────────────────────────────────────────────────

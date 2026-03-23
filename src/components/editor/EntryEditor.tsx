@@ -24,7 +24,10 @@ import { EntryTagPicker } from "@/components/tags/EntryTagPicker";
 import { MediaPicker } from "@/components/media/MediaPicker";
 import { MediaBrowser } from "@/components/media/MediaBrowser";
 
-import BlockNoteEditorComponent from "./BlockNoteEditor";
+const BlockNoteEditorComponent = dynamic(
+  () => import("./BlockNoteEditor"),
+  { ssr: false }, // This disables server-side rendering for this component
+);
 
 type Props = {
   entry: Entry;

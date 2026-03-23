@@ -56,7 +56,8 @@ export default function BlockNoteEditor({ initialContent, onChange }: Props) {
           "--bn-colors-border": "var(--cms-border)",
           "--bn-colors-side-menu": "var(--cms-text-3)",
           "--bn-font-family": "var(--cms-mono)",
-          paddingBottom: "120px", // breathing room at bottom of editor
+          position: "relative",
+          overflow: "hidden",
         } as React.CSSProperties
       }
     >
